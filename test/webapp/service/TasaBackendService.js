@@ -195,6 +195,7 @@ sap.ui.define([
 
 
         },
+        ////////////////////////////////////////////////////
         obtenerCodigoTipoPreservacion: function(cdemb){
             var uri = UtilService.getHostService() + "/api/General/Read_Table/";
             var sBody = UtilService.getBodyReadTable();
@@ -207,9 +208,135 @@ sap.ui.define([
             });
 
 
+        },
+        obtenerListaEquipamiento: function(cdemb){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["CDEQP", "DSEQP", "CDUMD", "DSUMD", "CNEPE"];
+            sBody.option[0].wa = "CDEMB = '" + cdemb + "' AND ERGEQ = 'S'";
+            sBody.tabla = "ZV_FLQE";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+
+
+        },
+        obtenerListaCoordZonaPesca: function(zonaPesca){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["LTMIN", "LTMAX", "LNMIN", "LNMAX"];
+            sBody.option[0].wa = "CDZPC LIKE '" + zonaPesca + "'";
+            sBody.tabla = "ZFLZPC";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+
+
+        },
+        obtenerListaPescaDeclarada: function(nroMarea, nroEvento){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["CDSPC", "DSSPC", "CNPCM", "CDUMD", "DSUMD", "OBSER", "ZMODA", "MANDT"];
+            sBody.option[0].wa = "NRMAR = " + nroMarea + " AND NREVN = " + nroEvento;
+            sBody.tabla = "ZV_FLCD";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+
+
+        },
+        obtenerListaBodegas: function(cdemb){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["CDBOD", "DSBOD", "CAPES"];
+            sBody.option[0].wa = "CDEMB = '" + cdemb + "' AND ERGBO = 'S'";
+            sBody.tabla = "ZV_FLBE";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+
+
+        },
+        obtenerListaPescaBodegas: function(cdmarea, nroEvento){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["CDBOD", "CNPCM"];
+            sBody.option[0].wa = "NRMAR = " + cdmarea + " AND NREVN = " + nroEvento;
+            sBody.tabla = "ZFLPDB";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+
+
+        },
+        obtenerListaPuntosDescarga: function(codPlanta){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["CDPDG", "CDTPD", "DSPDG"];
+            sBody.option[0].wa = "ESREG = 'S' AND CDPTA = '" + codPlanta + "'";
+            sBody.tabla = "ZFLPDG";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+
+
+        },
+        obtenerListaPescaDescargada: function(nroDescarga){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["CDTPC", "CDPTA", "DSPTA", "CDSPC", "DSSPC", "CNPDS", "CDPDG", "CDLDS", "FIDES", "HIDES", "FFDES", "HFDES", 
+            "FECCONMOV", "ESDES", "NROPEDI", "DOC_MB1B", "DOC_MIGO", "DOC_MFBF", "SALDO", "TICKE", "CNPCM", "TPDES", "PESACUMOD", "MANDT"];
+            sBody.option[0].wa = "NRDES = '" + nroDescarga + "'";
+            sBody.tabla = "ZV_FLDS";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+
+
+        },
+        obtenerListaSiniestros: function(cdmarea, nroEvento){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["CDINC", "TTINC", "CDSIS", "EQKTX", "AUSWK", "ESOPA", "ESOPP"];
+            sBody.option[0].wa = "NRMAR = " + cdmarea + " AND NREVN = " + nroEvento + " AND SPRAS EQ 'S'";
+            sBody.tabla = "ZV_FLSI";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+
+
+        },
+        obtenerListaHorometro: function(centro, evento, marea, nroEvento){
+            var uri = UtilService.getHostService() + "/api/eventospesca/obtenerHoroEvento/";
+            var sBody = UtilService.getHorometro();
+            sBody.centro = centro;
+            sBody.evento = evento;
+            sBody.marea = marea;
+            sBody.nroEvento = nroEvento;
+            return this.http(uri).post(null, sBody).then(function(response){
+                var data = JSON.parse(response);
+                return data;
+            });
+        },
+        obtenerConfiguracionEvento: function(){
+            var uri = UtilService.getHostService() + "/api/eventospesca/ObtenerConfEventosPesca/";
+            var sBody = {};
+            return this.http(uri).post(null).then(function(response){
+                var data = JSON.parse(response);
+                return data;
+            });
         }
 
     });
+
 
     return new TasaBackend();
 });

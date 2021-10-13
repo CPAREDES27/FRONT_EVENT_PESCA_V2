@@ -12,7 +12,7 @@
 									<Label text="Estado de operación:" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true"/>
 								</form:label>
 								<form:fields>
-									<ComboBox placeholder="Estado de operación" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
+									<ComboBox id="cmb_estaOperacion" placeholder="Estado de operación" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
 										<items>
 											<core:Item text="Item" enabled="true" key="Item" />
 											<core:Item text="Item" enabled="true" key="Item" />
@@ -54,7 +54,7 @@
 									<Label text="Temperatura del mar" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<Input value="30" description="ºC" type="Number" showValueHelp="false" enabled="true" visible="true" width="30%" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0"/>
+									<Input id="i_temperaturaMar" value="30" description="ºC" type="Number" showValueHelp="false" enabled="true" visible="true" width="30%" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0"/>
 								</form:fields>
 							</form:FormElement>
 							<form:FormElement id="fe_stockCombustible" visible="true">
@@ -73,7 +73,7 @@
 									<Input id="ip_muestra" value="30" type="Number" showValueHelp="false" enabled="true" visible="true" width="50%" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0"/>
 								</form:fields>
 							</form:FormElement>
-							<form:FormElement visible="true">
+							<form:FormElement id="fe_sistema_frio" visible="true">
 								<form:label>
 									<Label text="Estado sist. frio" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
@@ -96,7 +96,7 @@
 									<Label text="Motivo de limitación:" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true"/>
 								</form:label>
 								<form:fields>
-									<ComboBox placeholder="Motivo de limitación" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
+									<ComboBox id="cmb_motivoLim" placeholder="Motivo de limitación" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
 										<items>
 											<core:Item text="Item" enabled="true" key="Item" />
 											<core:Item text="Item" enabled="true" key="Item" />

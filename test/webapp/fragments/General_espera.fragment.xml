@@ -12,7 +12,7 @@
 									<Label text="Motivo de espera" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true"/>
 								</form:label>
 								<form:fields>
-									<ComboBox placeholder="Motivo de espera" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
+									<ComboBox id="cmb_motivoEspera" placeholder="Motivo de espera" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
 										<items>
 											<core:Item text="Item" enabled="true" key="Item" />
 											<core:Item text="Item" enabled="true" key="Item" />
@@ -30,13 +30,7 @@
 									<Label text="Duración" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true"/>
 								</form:label>
 								<form:fields>
-									<ComboBox placeholder="Duración" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
-										<items>
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
-										</items>
-									</ComboBox>
+									<Input placeholder="Duración" type="Number" showValueHelp="false" enabled="false" visible="true" width="50%"/>
 								</form:fields>
 							</form:FormElement>
 						</form:formElements>

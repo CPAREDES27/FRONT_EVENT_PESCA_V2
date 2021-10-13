@@ -12,7 +12,7 @@
 									<Label text="Puerto" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<Input value="011" description="Chimbote" type="Text" showValueHelp="false" enabled="true" visible="true" width="80%" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0"/>
+									<Input value="011" description="Chimbote" type="Text" showValueHelp="false" enabled="false" visible="true" width="80%" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0"/>
 								</form:fields>
 							</form:FormElement>
 							<form:FormElement id="fe_ZonaPesca" visible="true">
@@ -35,7 +35,7 @@
 									<Label text="Empresa" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<Input value="XTS" type="Text" showValueHelp="false" enabled="true" visible="true" width="100%" required="false" maxLength="0"/>
+									<Input value="XTS" type="Text" showValueHelp="false" enabled="false" visible="true" width="100%" required="false" maxLength="0"/>
 									<Text text="Xternal"/>
 								</form:fields>
 							</form:FormElement>
@@ -48,6 +48,7 @@
 									<Label text="Planta" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
+									<Input type="Text" showValueHelp="false" enabled="false" visible="true" width="100%" required="false" maxLength="0"/>
 									<Button id="btn_Planta" text="" type="Default" icon="sap-icon://sys-find" iconFirst="true" width="50%" enabled="true" visible="true" iconDensityAware="false" />
 									<Text text="CALLAO" width="100%" textDirection="Inherit"/>
 								</form:fields>
@@ -69,8 +70,8 @@
 									<Label text="Latitud" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<Input value="74" description="º" type="Number" showValueHelp="false" enabled="true" visible="true" width="90%" maxLength="0" />
-									<Input value="75" description="'" type="Number" showValueHelp="false" enabled="true" visible="true" width="90%" maxLength="0"/>
+									<Input id="ip_latitud1" value="74" description="º" type="Number" showValueHelp="false" enabled="true" visible="true" width="90%" maxLength="0" />
+									<Input id="ip_latitud2" value="75" description="'" type="Number" showValueHelp="false" enabled="true" visible="true" width="90%" maxLength="0"/>
 								</form:fields>
 							</form:FormElement>
 						</form:formElements>
@@ -82,8 +83,8 @@
 									<Label text="Longitud" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<Input value="74" description="º" type="Number" showValueHelp="false" enabled="true" visible="true" width="90%" maxLength="0"/>
-									<Input value="75" description="'" type="Number" showValueHelp="false" enabled="true" visible="true" width="90%" maxLength="0"/>
+									<Input id="ip_longitud1" value="74" description="º" type="Number" showValueHelp="false" enabled="true" visible="true" width="90%" maxLength="0"/>
+									<Input id="ip_longitud2" value="75" description="'" type="Number" showValueHelp="false" enabled="true" visible="true" width="90%" maxLength="0"/>
 								</form:fields>
 							</form:FormElement>
 						</form:formElements>

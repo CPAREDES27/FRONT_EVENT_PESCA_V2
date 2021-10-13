@@ -12,7 +12,7 @@
 									<Label text="Fecha/Hora Inic. Cala" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<DateTimePicker width="50%" displayFormat="medium" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
+									<DateTimePicker id="dtp_fechaIniCala" width="50%" displayFormat="medium" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
 								</form:fields>
 							</form:FormElement>
 							<form:FormElement id ="FechaEnvaseIni">
@@ -28,7 +28,7 @@
 									<Label text="Fecha de producción" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<DateTimePicker width="50%" displayFormat="medium" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
+									<DateTimePicker id="dtf_FechaProduccion" width="50%" displayFormat="medium" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
 								</form:fields>
 							</form:FormElement>
 							<form:FormElement id="fe_fechaArribo" visible="true">
@@ -48,7 +48,7 @@
 									<Label text="Fech/hora fin Cala" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<DateTimePicker width="50%" displayFormat="medium" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
+									<DateTimePicker id="dtp_fechaFinCala" width="50%" displayFormat="medium" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
 								</form:fields>
 							</form:FormElement>
 							<form:FormElement id ="FechaEnvaseFin">

@@ -82,7 +82,17 @@ sap.ui.define([
                 p_codpta: ""
             };
             return sBody;
+        },
+        getHorometro: function(){
+            var sBody = {
+                centro: "",
+                evento: "",
+                marea: "",
+                nroEvento: ""
+            };
+            return sBody;
         }
+
 
     }
 
