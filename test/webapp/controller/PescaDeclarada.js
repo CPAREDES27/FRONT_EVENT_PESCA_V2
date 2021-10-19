@@ -141,10 +141,18 @@ sap.ui.define([
         },
 
         validarCantidadTotalPesca: function(){
+            var bOk = true;
             var eventoActual = {};
-            var indProp = "";//obtener indicador de propeidad del modelo de marea
-            var cantPermiso = "";//obtener capacidad de bodega del modelo de marea
+            var detalleMarea = {};//modelo de detalle de marea
+            var indProp = detalleMarea.IndPropiedad;//obtener indicador de propeidad del modelo de marea
+            var cantPermiso = detalleMarea.CapBodegaPermiso;//obtener capacidad de bodega del modelo de marea
             var cantTotal = 0;
+
+            if(indProp == "T" && (cantTotal == null || (cantTotal != null))){
+                bOk = false;
+            }
+
+            return bOk;
         }
 
 

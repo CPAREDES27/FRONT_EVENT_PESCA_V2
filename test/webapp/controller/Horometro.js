@@ -167,25 +167,42 @@ sap.ui.define([
                 horometro.ReadOnly = false;
             }
             //refresh model
-        }
+        },
+
+        validarHorometrosEvento: function(){
+            var bOk = true;         
+            var listaEventos = []; //modelo de lista de eventos
+            var detalleMarea = {};//cargar modelo detalle marea
+            var eventoActual = {};//model ode evento
+            var eventoCompar = null;
+            var tipoEvento = eventoActual.TipoEvento;
+            var motivoMarea = detalleMarea.MotMar;
+            var indActual = eventoActual.Posicion;
+            var indCompar = -1;
+            var evenLimi = {
+                "1": ["5", "6"],
+                "5": ["1"],
+                "6": ["5", "6"] 
+            };
+            var evenLimites = evenLimi[tipoEvento];
+            for (let index = indActual-1; index >= 0; index--) {
+                const element = array[index];
+                eventoCompar = listaEventos[index];
+                if(evenLimites.includes(eventoCompar.TipoEvento)){
+                    indCompar = index;
+                    //validar y ejecutar metodo wdThis.wdGetEventoCustController().obtenerDetalleEvento()
+                    break;
+                }
+            }
+
+            if(eventoActual.FechIni == null || eventoActual.HoraIni == null){
+                bOk = false;
+            }
+
+            return bOk;
+        },
+
         
         
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     });
 });

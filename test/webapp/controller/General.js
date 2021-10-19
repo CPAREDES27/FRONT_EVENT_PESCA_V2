@@ -81,7 +81,13 @@ sap.ui.define([
 			});
 
 			this.getView().byId("messagePopoverBtn").addDependent(this.oMP);
+        },
+
+        validarCamposGeneral: function(){
+            
         }
+
+        
 
 
 
