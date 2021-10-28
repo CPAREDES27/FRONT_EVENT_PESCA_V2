@@ -27,6 +27,17 @@ sap.ui.define([
 
         getcontrol:function(){
             return this._oControl;
+        },
+
+        validarSiniestros: function(){
+            var bOk = true;
+            var eventoActual = {}; //nodo evento actual
+            var siniestros = eventoActual.Siniestros;
+            if(siniestros.length < 1){
+                bOk = false;
+            }
+            return bOk;
         }
+
 	});
 });

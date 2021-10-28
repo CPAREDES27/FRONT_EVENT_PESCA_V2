@@ -2,12 +2,20 @@ sap.ui.define([
     "sap/ui/base/ManagedObject",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
-    "sap/ui/integration/library"
+    "sap/ui/integration/library",
+    "./General",
+    "./Horometro",
+    "./PescaDeclarada",
+    "./Siniestro"
 ], function (
     ManagedObject,
     JSONModel,
     MessageToast,
-    integrationLibrary
+    integrationLibrary,
+    General,
+    Horometro,
+    PescaDeclarada,
+    Siniestro
 ) {
     "use strict";
 
@@ -122,40 +130,124 @@ sap.ui.define([
 
 
         validarDatosEvento: function(){
+            var DataSession = {};//modelo data session
+            var DetalleMarea = {};//modelo detalle marea
             var soloLectura = DataSession.SoloLectura;//modelo data session
             var tieneErrores = DetalleMarea.TieneErrores;//modelo detalle marea
+            var listaEventos = DetalleMarea.ListaEventos;
             var eventoActual = {};//modelo evento actual
             var visible = {};//modelo visible
             var motivoEnCalend = ["1", "2", "8"];//motivos de marea con registros en calendario
+
             if(!soloLectura && !tieneErrores){
                 var tipoEvento = eventoActual.TipoEvento;
                 var indEvento = eventoActual.Indicador;
                 var motMarea = eventoActual.MotMarea;
-                var bOk = true;//llamar metodo wdThis.validarCamposGeneral(true)
+                var bOk = General.validarCamposGeneral(true);
+                var eveActual = listaEventos.indexOf(eventoActual);
+                var cantEventos = listaEventos.length;
                 if(bOk && visible.TabHorometro){
-                    bOk = true;//llamar metodo wdThis.validarLecturaHorometros(true);
+                    bOk = Horometro.validarLecturaHorometros();
                     if(bOk){
-                        bOk = true;//llamar wdThis.validarHorometrosEvento();
+                        bOk = Horometro.validarHorometrosEvento();
                     }
                 }
 
-                
                 if(bOk && tipoEvento == "6" && motivoEnCalend.includes(motMarea)){
                     visible.VisibleDescarga = false;
                     visible.FechFin = false;
                     var fechIni = eventoActual.FechIni;
-                    bOk = true;//llamar a metodo wdThis.wdGetFormCustController().verificarTemporada(motivoMarea, fechIni);
-                    //refrescar modelo visible
+                    bOk = General.verificarTemporada(motMarea, fechIni);
                 }
 
                 if(bOk && tipoEvento == "3"){
                     visible.Descarga = true;
-                    bOk = true; //llamar metodo wdThis.validarPescaDeclarada(true);
+                    bOk = PescaDeclarada.validarPescaDeclarada(true);
                     if(bOk && motMarea == "1"){
-                        //llamar metodo wdThis.calcularCantTotalBodegaEve();
-                        bOk = true;//llamar metodo wdThis.validarBodegas(true);
-                        
+                        Horometro.calcularCantTotalBodegaEve();
+                        bOk = this.validarBodegas();
+                        if(bOk){
+                            bOk = this.validarBodegaPesca(true)();
+                        }
+                        if(bOk){
+                            bOk = PescaDeclarada.validarPorcPesca();
+                        }
+                        PescaDeclarada.calcularPescaDeclarada();
+                    } else if(bOk && motMarea == "2"){
+                        PescaDeclarada.calcularCantTotalPescDeclEve();
                     }
+                    if(bOk){
+                        PescaDeclarada.validarCantidadTotalPesca();
+                    }
+                    if(bOk){
+                        bOk = General.validarIncidental();
+                        if(bOk){
+                            //wdThis.wdGetEventoCustController().cargarIncidental();
+                        }
+                    }
+
+                    if(eventoActual.CantTotalPescDecla){
+                        eventoActual.CantTotalPescDeclaM = eventoActual.CantTotalPescDecla;
+                    }else{
+                        eventoActual.CantTotalPescDeclaM = null;
+                    }
+
+                    if(eveActual < cantEventos){
+                        var cantTotalDec = eventoActual.CantTotalPescDecla;
+                        var cantTotalDecDesc = 0;
+                        for (let index = (eveActual + 1); index < cantEventos; index++) {
+                            const element = listaEventos[index];
+                            if(element.TipoEvento == "3"){
+                                visible.VisibleDescarga = false;
+                                cantTotalDec += element.CantTotalPescDecla;
+                            } else if(element.TipoEvento == "5"){
+                                visible.VisibleDescarga = false;
+                                if (index == (cantEventos - 1)) {
+                                    if(cantTotalDec < 0 || cantTotalDec == 0){
+                                        element.MotiNoPesca = "7";
+                                        element.Editado = true;
+                                    }
+                                } else {
+                                    element.MotiNoPesca = null;
+                                    element.Editado = true;
+                                }
+                            } else if(element.TipoEvento == "6"){
+                                visible.VisibleDescarga = false;
+                                visible.FechFin = false;
+                                if(cantTotalDec < 0 || cantTotalDec == 0){
+                                    bOk = false;
+                                    break;
+                                } else {
+                                    if(element.PescaDescargada.CantPescaDeclarada){
+                                        cantTotalDecDesc += element.PescaDescargada.CantPescaDeclarada;
+                                    }
+                                }
+                            } else if(element.TipoEvento == "1"){
+                                visible.VisibleDescarga = true;
+                                if(cantTotalDec > 0 && cantTotalDecDesc == 0){
+
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+                if(bOk && tipoEvento == "6"){
+                    visible.VisibleDescarga = false;
+                    visible.FechFin = false;
+                    bOk = this.validarPescaDescargada();
+                    if(eventoActual.PescaDescargada.CantPescaModificada){
+                        eventoActual.CantTotalPescDescM = eventoActual.PescaDescargada.CantPescaModificada;
+                    }else{
+                        eventoActual.CantTotalPescDescM = null;
+                    }
+                    //wdThis.wdGetEventoCustController().obtenerTipoDescarga(eveActual);
+                }
+
+                if(bOk && tipoEvento == "8"){
+                    visible.VisibleDescarga = true;
+                    bOk = Siniestro.validarSiniestros();
                 }
             }
             return bOk;
