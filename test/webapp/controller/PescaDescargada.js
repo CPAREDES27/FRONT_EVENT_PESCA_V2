@@ -9,7 +9,11 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/ui/integration/library",
     "../model/textValidaciones",
-    "sap/m/MessageBox"
+    "./General",
+    "sap/m/MessageBox",
+    "./Horometro",
+    "./PescaDeclarada",
+    "./Siniestro"
 ], function (
     TasaBackendService,
     FilterOperator,
@@ -21,7 +25,11 @@ sap.ui.define([
     MessageToast,
     integrationLibrary,
     textValidaciones,
-    MessageBox
+    MessageBox,
+    General,
+    Horometro,
+    PescaDeclarada,
+    Siniestro
 ) {
     "use strict";
 
@@ -140,48 +148,130 @@ sap.ui.define([
             //refrescar modelo
         },
 
-
-        validarDatosEvento: function () {
+        validarDatosEvento: function(){
+            var DataSession = {};//modelo data session
+            var DetalleMarea = {};//modelo detalle marea
             var soloLectura = DataSession.SoloLectura;//modelo data session
             var tieneErrores = DetalleMarea.TieneErrores;//modelo detalle marea
+            var listaEventos = DetalleMarea.ListaEventos;
             var eventoActual = {};//modelo evento actual
             var visible = {};//modelo visible
             var motivoEnCalend = ["1", "2", "8"];//motivos de marea con registros en calendario
-            if (!soloLectura && !tieneErrores) {
+
+            if(!soloLectura && !tieneErrores){
                 var tipoEvento = eventoActual.TipoEvento;
                 var indEvento = eventoActual.Indicador;
                 var motMarea = eventoActual.MotMarea;
-                var bOk = true;//llamar metodo wdThis.validarCamposGeneral(true)
-                if (bOk && visible.TabHorometro) {
-                    bOk = true;//llamar metodo wdThis.validarLecturaHorometros(true);
-                    if (bOk) {
-                        bOk = true;//llamar wdThis.validarHorometrosEvento();
+                var bOk = General.validarCamposGeneral(true);
+                var eveActual = listaEventos.indexOf(eventoActual);
+                var cantEventos = listaEventos.length;
+                if(bOk && visible.TabHorometro){
+                    bOk = Horometro.validarLecturaHorometros();
+                    if(bOk){
+                        bOk = Horometro.validarHorometrosEvento();
                     }
                 }
 
-
-                if (bOk && tipoEvento == "6" && motivoEnCalend.includes(motMarea)) {
+                if(bOk && tipoEvento == "6" && motivoEnCalend.includes(motMarea)){
                     visible.VisibleDescarga = false;
                     visible.FechFin = false;
                     var fechIni = eventoActual.FechIni;
-                    bOk = true;//llamar a metodo wdThis.wdGetFormCustController().verificarTemporada(motivoMarea, fechIni);
-                    //refrescar modelo visible
+                    bOk = General.verificarTemporada(motMarea, fechIni);
                 }
 
-                if (bOk && tipoEvento == "3") {
+                if(bOk && tipoEvento == "3"){
                     visible.Descarga = true;
-                    bOk = true; //llamar metodo wdThis.validarPescaDeclarada(true);
-                    if (bOk && motMarea == "1") {
-                        //llamar metodo wdThis.calcularCantTotalBodegaEve();
-                        bOk = true;//llamar metodo wdThis.validarBodegas(true);
-
+                    bOk = PescaDeclarada.validarPescaDeclarada(true);
+                    if(bOk && motMarea == "1"){
+                        Horometro.calcularCantTotalBodegaEve();
+                        bOk = this.validarBodegas();
+                        if(bOk){
+                            bOk = this.validarBodegaPesca(true)();
+                        }
+                        if(bOk){
+                            bOk = PescaDeclarada.validarPorcPesca();
+                        }
+                        PescaDeclarada.calcularPescaDeclarada();
+                    } else if(bOk && motMarea == "2"){
+                        PescaDeclarada.calcularCantTotalPescDeclEve();
                     }
+                    if(bOk){
+                        PescaDeclarada.validarCantidadTotalPesca();
+                    }
+                    if(bOk){
+                        bOk = General.validarIncidental();
+                        if(bOk){
+                            //wdThis.wdGetEventoCustController().cargarIncidental();
+                        }
+                    }
+
+                    if(eventoActual.CantTotalPescDecla){
+                        eventoActual.CantTotalPescDeclaM = eventoActual.CantTotalPescDecla;
+                    }else{
+                        eventoActual.CantTotalPescDeclaM = null;
+                    }
+
+                    if(eveActual < cantEventos){
+                        var cantTotalDec = eventoActual.CantTotalPescDecla;
+                        var cantTotalDecDesc = 0;
+                        for (let index = (eveActual + 1); index < cantEventos; index++) {
+                            const element = listaEventos[index];
+                            if(element.TipoEvento == "3"){
+                                visible.VisibleDescarga = false;
+                                cantTotalDec += element.CantTotalPescDecla;
+                            } else if(element.TipoEvento == "5"){
+                                visible.VisibleDescarga = false;
+                                if (index == (cantEventos - 1)) {
+                                    if(cantTotalDec < 0 || cantTotalDec == 0){
+                                        element.MotiNoPesca = "7";
+                                        element.Editado = true;
+                                    }
+                                } else {
+                                    element.MotiNoPesca = null;
+                                    element.Editado = true;
+                                }
+                            } else if(element.TipoEvento == "6"){
+                                visible.VisibleDescarga = false;
+                                visible.FechFin = false;
+                                if(cantTotalDec < 0 || cantTotalDec == 0){
+                                    bOk = false;
+                                    break;
+                                } else {
+                                    if(element.PescaDescargada.CantPescaDeclarada){
+                                        cantTotalDecDesc += element.PescaDescargada.CantPescaDeclarada;
+                                    }
+                                }
+                            } else if(element.TipoEvento == "1"){
+                                visible.VisibleDescarga = true;
+                                if(cantTotalDec > 0 && cantTotalDecDesc == 0){
+
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+                if(bOk && tipoEvento == "6"){
+                    visible.VisibleDescarga = false;
+                    visible.FechFin = false;
+                    bOk = this.validarPescaDescargada();
+                    if(eventoActual.PescaDescargada.CantPescaModificada){
+                        eventoActual.CantTotalPescDescM = eventoActual.PescaDescargada.CantPescaModificada;
+                    }else{
+                        eventoActual.CantTotalPescDescM = null;
+                    }
+                    //wdThis.wdGetEventoCustController().obtenerTipoDescarga(eveActual);
+                }
+
+                if(bOk && tipoEvento == "8"){
+                    visible.VisibleDescarga = true;
+                    bOk = Siniestro.validarSiniestros();
                 }
             }
             return bOk;
         },
-
-        validarPescaDescargada: function () {
+        validarPescaDescargada: function(){
             var bOk = true;
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             var valorAtributo = null;
@@ -194,22 +284,22 @@ sap.ui.define([
             var centEmba = DetalleMarea.CenEmbarcacion;
             var atributos = ["CantPescaDescargada", "CantPescaDeclarada"];
             var mensaje = "";
-            if (indPropPlanta == "T") {
-                if (PescaDescargada.Especie == "0000000000") {
+            if(indPropPlanta == "T"){
+                if(PescaDescargada.Especie == "0000000000"){
                     mensaje = this.oBundle.getText("SELECCESPECIE");
                     MessageBox.error(mensaje);
                     bOk = false;
                 }
-                if (PescaDescargada.Indicador == "N") {
+                if(PescaDescargada.Indicador == "N"){
                     PescaDescargada.NroDescarga = tipoDescarga + centEmba;
                     //Refrescar modelo
                 }
                 PescaDescargada.FechContabilizacion = eventoActual.FechProduccion;
                 PescaDescargada.Planta = eventoActual.Planta;
-            } else if (indPropPlanta == "P") {
-                if (motMarea == "1") {
+            }else if(indPropPlanta == "P"){
+                if(motMarea == "1"){
                     atributos = ["CantPescaDeclarada"];
-                } else {
+                }else{
                     atributos = ["CantPescaDeclarada", "PuntDescarga", "FechContabilizacion"];
                 }
                 eventoActual.FechProduccion = PescaDescargada.FechContabilizacion;
@@ -222,29 +312,29 @@ sap.ui.define([
                 }
             }
 
-            if (atributos) {
+            if(atributos){
                 var actualPescaDescargada = {}//actual pesca descargada
                 for (let index = 0; index < atributos.length; index++) {
                     const element = atributos[index];
                     var valor = actualPescaDescargada[element];
-                    if (!valor) {
+                    if(!valor){
                         bOk = false;
                         mensaje = this.oBundle.getText("MISSINGFIELD", [element]);
                         //agregar mensaje al modelo de message popover
                     }
-
+                    
                 }
             }
 
-            if (bOk) {
-                if (indPropPlanta == "T") {
+            if(bOk){
+                if(indPropPlanta == "T"){
                     PescaDescargada.CantPescaModificada = PescaDescargada.CantPescaDescargada;
                     //refrescar modelo
                 }
-                if (PescaDescargada.CantPescaDeclarada < 0) {
+                if(PescaDescargada.CantPescaDeclarada < 0){
                     bOk = false;
                 }
-
+                
             }
 
             return bOk;
@@ -539,7 +629,7 @@ sap.ui.define([
                 let sResponsivePaddingClasses = "sapUiResponsivePadding--header sapUiResponsivePadding--content sapUiResponsivePadding--footer";
                 if (this._controler._indicadorPropXPlanta == "T") {
 					MessageBox.show(
-                        '¿Realmente desea eliminar el registro de pesca descargada?',
+                        '�Realmente desea eliminar el registro de pesca descargada?',
                         {
                             icon: MessageBox.Icon.WARNING,
                             title: "Eliminar pesca descargada",
@@ -556,7 +646,7 @@ sap.ui.define([
 				} else if (this._controler._indicadorPropXPlanta =="P") { //Descarga en planta propia
 					if (this._controler._motivoMarea == "1") {
 						MessageBox.show(
-                            '¿Realmente desea eliminar el registro de pesca descargada?',
+                            '�Realmente desea eliminar el registro de pesca descargada?',
                             {
                                 icon: MessageBox.Icon.WARNING,
                                 title: "Eliminar pesca descargada",
@@ -572,7 +662,7 @@ sap.ui.define([
                         );
 					} else if (this._controler._motivoMarea == "2") {
 						MessageBox.show(
-                            '¿Realmente desea eliminar el registro de pesca descargada?,\n este proceso es irreversible y puede durar varios minutos.',
+                            '�Realmente desea eliminar el registro de pesca descargada?,\n este proceso es irreversible y puede durar varios minutos.',
                             {
                                 icon: MessageBox.Icon.WARNING,
                                 title: "Eliminar pesca descargada",

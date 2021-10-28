@@ -94,6 +94,7 @@ sap.ui.define([
                     pescaDecla.CantPesca = cantTotal * (porcPesca * 0.01);
                 }
             }
+            //refrescar modelo
         },
 
         validarPorcPesca: function(){

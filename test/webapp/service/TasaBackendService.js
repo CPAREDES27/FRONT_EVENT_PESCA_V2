@@ -326,6 +326,7 @@ sap.ui.define([
                 return data;
             });
         },
+
         obtenerConfiguracionEvento: function(){
             var uri = UtilService.getHostService() + "/api/eventospesca/ObtenerConfEventosPesca/";
             var sBody = {};
@@ -396,6 +397,41 @@ sap.ui.define([
             return this.http(uri).post(null, sBody).then(function(response){
                 var data = JSON.parse(response);
                 return data;
+            });
+        },
+        verificarTemporada: function(codTemp, fecha){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["CDTPC"];
+            sBody.option[0].wa = "CDTPC = '" + codTemp + "' AND FHCAL LIKE '" + fecha + "'";
+            sBody.tabla = "ZFLCLT";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+        },
+
+        obtenerTemporadas: function(codTemp, fecha){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["CDSPC", "DSSPC", "LTINI", "LNINI", "LTFIN", "LGFIN", "MILLA", "MANDT"];
+            sBody.option[0].wa = "CDTPC = '" + codTemp + "' AND FHCAL LIKE '" + fecha + "'";
+            sBody.tabla = "ZV_FLCP";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+        },
+
+        obtenerEspeciesPermitidas: function(cdemb, codTemp){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["CDSPC"];
+            sBody.option[0].wa = "CDEMB = '" + cdemb + "' AND CDTPC LIKE '" + codTemp + "' AND INPMS = 'I'";
+            sBody.tabla = "ZFLPEC";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
             });
         }
 
