@@ -36,7 +36,7 @@
 									<Label text="Fecha/hora ETA" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<DateTimePicker width="50%" displayFormat="medium" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
+									<DateTimePicker width="50%" displayFormat="short" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
 								</form:fields>
 							</form:FormElement>
 						</form:formElements>
@@ -48,7 +48,7 @@
 									<Label text="Fech/hora fin Cala" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<DateTimePicker id="dtp_fechaFinCala" width="50%" displayFormat="medium" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
+									<DateTimePicker id="dtp_fechaFinCala" width="50%" displayFormat="short" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
 								</form:fields>
 							</form:FormElement>
 							<form:FormElement id ="FechaEnvaseFin">
@@ -56,7 +56,7 @@
 									<Label text="Fech/hora fin envase" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<DateTimePicker id="dtf_fechaFinEnv" width="50%" displayFormat="medium" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
+									<DateTimePicker id="dtf_fechaFinEnv" width="50%" displayFormat="short" required="false" valueStateText="Invalid entry" enabled="true" visible="true" valueFormat="yyyyMMddHHmmss" />
 								</form:fields>
 							</form:FormElement>
 						</form:formElements>

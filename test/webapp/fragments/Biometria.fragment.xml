@@ -2,13 +2,22 @@
 
 	<m:Panel id="0007" expandable="false">
 		<m:content>
-			<Table id="table_biometria" selectionMode="MultiToggle" rows="{/ProductCollection}" visibleRowCount="3" enableCellFilter="{ui>/cellFilterOn}" ariaLabelledBy="title">
+			<Table id="table_biometria" 
+			selectionMode="MultiToggle" 
+			rows="{eventos>/ListaBiometria}" 
+			visibleRowCount="3" 
+			enableCellFilter="{ui>/cellFilterOn}" ariaLabelledBy="title">
 				<extension>
 					<m:OverflowToolbar style="Clear">
 						<m:Title id="title_biom" text="Lista de biometria: " />
 						<m:ToolbarSpacer />
-						<m:Button text="Agregar" icon="sap-icon://add" tooltip="Clear all filters" press="clearAllFilters" />
-						<m:Button text="Eliminar" icon="sap-icon://decline" tooltip="Clear all filters" press="clearAllFilters" />
+						<m:Button text="Agregar" icon="sap-icon://add" press=".handleTableSelectDialogPress"
+						ariaHasPopup="Dialog">
+							<m:customData>
+								<core:CustomData key="multi" value="true" />
+							</m:customData>
+						</m:Button>
+						<m:Button text="Eliminar" icon="sap-icon://decline" tooltip="Clear all filters" press=".deleteItemsBiometria" />
 
 					</m:OverflowToolbar>
 					<m:OverflowToolbar style="Clear">

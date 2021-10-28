@@ -21,32 +21,36 @@
 							<IconTabFilter id="idGeneral" iconColor="Default" text="General" count="" design="Vertical" showAll="false" textDirection="Inherit" enabled="true" visible="true" iconDensityAware="false">
 
 							</IconTabFilter>
-							<IconTabFilter id="idDistribucion" iconColor="Default" text="Distribucion" count="" design="Vertical" showAll="false" textDirection="Inherit" enabled="true" visible="true" iconDensityAware="false">
+							<IconTabFilter id="idDistribucion" iconColor="Default" text="Distribucion" count="" design="Vertical" showAll="false" 
+							textDirection="Inherit" enabled="true" visible="false" iconDensityAware="false">
 
 							</IconTabFilter>
-							<IconTabFilter id="idBiometria" iconColor="Default" text="Biometria" count="" design="Vertical" showAll="false" textDirection="Inherit" enabled="true" visible="true" iconDensityAware="false">
+							<IconTabFilter id="idBiometria" iconColor="Default" text="Biometria" count="" design="Vertical" showAll="false" 
+							textDirection="Inherit" enabled="true" visible="false" iconDensityAware="false">
 								
 							</IconTabFilter>
-							<IconTabFilter id="idPescaDesc" iconColor="Default" text="Pesca descargada" count="" design="Vertical" showAll="false" textDirection="Inherit" enabled="true" visible="true" iconDensityAware="false">
+							<IconTabFilter id="idPescaDesc" iconColor="Default" text="Pesca descargada" count="" design="Vertical" showAll="false" 
+							textDirection="Inherit" enabled="true" visible="false" iconDensityAware="false">
 								
 							</IconTabFilter>
-							<IconTabFilter id="idPescaDecl" iconColor="Default" text="Pesca declarada" count="" design="Vertical" showAll="false" textDirection="Inherit" enabled="true" visible="true" iconDensityAware="false">
+							<IconTabFilter id="idPescaDecl" iconColor="Default" text="Pesca declarada" count="" design="Vertical" showAll="false" 
+							textDirection="Inherit" enabled="true" visible="false" iconDensityAware="false">
 								
 							</IconTabFilter>
-							<IconTabSeparator icon="" iconDensityAware="false" />
-							<IconTabFilter id="idHorometro" iconColor="Default" text="Horometro" count="" design="Vertical" showAll="false" textDirection="Inherit" enabled="true" visible="true" iconDensityAware="false">
+							<IconTabFilter id="idHorometro" iconColor="Default" text="Horometro" count="" design="Vertical" showAll="false" 
+							textDirection="Inherit" enabled="true" visible="false" iconDensityAware="false">
 								
 							</IconTabFilter>
-							<IconTabSeparator icon="" iconDensityAware="false" />
-							<IconTabFilter id="idEquipamiento" iconColor="Default" text="Equipamiento" count="" design="Vertical" showAll="false" textDirection="Inherit" enabled="true" visible="true" iconDensityAware="false">
+							<IconTabFilter id="idEquipamiento" iconColor="Default" text="Equipamiento" count="" design="Vertical" showAll="false" 
+							textDirection="Inherit" enabled="true" visible="false" iconDensityAware="false">
 								
 							</IconTabFilter>
-							<IconTabSeparator icon="" iconDensityAware="false" />
-							<IconTabFilter id="idSiniestro" iconColor="Default" text="Siniestro" count="" design="Vertical" showAll="false" textDirection="Inherit" enabled="true" visible="true" iconDensityAware="false">
+							<IconTabFilter id="idSiniestro" iconColor="Default" text="Siniestro" count="" design="Vertical" showAll="false" 
+							textDirection="Inherit" enabled="true" visible="false" iconDensityAware="false">
 								
 							</IconTabFilter>
-							<IconTabSeparator icon="" iconDensityAware="false" />
-							<IconTabFilter id="idAccidente" iconColor="Default" text="Accidente" count="" design="Vertical" showAll="false" textDirection="Inherit" enabled="true" visible="true" iconDensityAware="false">
+							<IconTabFilter id="idAccidente" iconColor="Default" text="Accidente" count="" design="Vertical" showAll="false" 
+							textDirection="Inherit" enabled="true" visible="false" iconDensityAware="false">
 								
 							</IconTabFilter>
 							<IconTabSeparator icon="" iconDensityAware="false" />

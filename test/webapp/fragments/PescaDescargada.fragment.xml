@@ -2,345 +2,221 @@
 
 	<m:Panel id="0009" expandable="false">
 		<m:content>
-			<Table
-				id="table_pesc_desc_ticket"
-				selectionMode="MultiToggle"
-				rows="{/ProductCollection}"
-				visibleRowCount="3"
-				enableCellFilter="{ui>/cellFilterOn}"
-				ariaLabelledBy="title">
+			<Table id="table_pesc_desc_ticket" selectionMode="MultiToggle" 
+			rows="{eventos>/ListaPescaDescargada}" visibleRowCount="3" 
+			enableCellFilter="{ui>/cellFilterOn}" ariaLabelledBy="title">
 				<extension>
-					<m:OverflowToolbar id="ext_pesc_desc" style="Clear" >
-						<m:Title id="title2" text="Cantidad de pesca en declarada: "/>
-						<m:Text text="50 "/>
-						<m:Text text="TM"/>
-						<m:ToolbarSpacer/>
-						
+					<m:OverflowToolbar id="ext_pesc_desc" style="Clear">
+						<m:Title id="title2" text="Cantidad de pesca en declarada: " />
+						<m:Text text="50 " />
+						<m:Text text="TM" />
+						<m:ToolbarSpacer />
+
 					</m:OverflowToolbar>
 				</extension>
 				<columns>
-					<Column
-						id="pdt_col_BuscarDesc"
-						width="4rem">
+					<Column id="pdt_col_BuscarDesc" width="4rem">
 						<m:Label text="" />
 						<template>
-							<m:Text text="{Name}" wrapping="false" />
+							<m:Button icon="sap-icon://inspection" tooltip="Buscar descarga" press=".buscarDescarga"/>
 						</template>
 					</Column>
-					<Column
-						id="pdt_col_EliminarDesc"
-						width="4rem">
+					<Column id="pdt_col_EliminarDesc" width="4rem">
 						<m:Label text="" />
 						<template>
-							<m:Text text="{Name}" wrapping="false" />
+							<m:Button icon="sap-icon://sys-cancel-2" tooltip="Eliminar descarga" press=".eliminarDesacarga"/>
 						</template>
 					</Column>
-					<Column
-						width="11rem">
+					<Column width="11rem">
 						<m:Label text="Nro. descarga" />
 						<template>
-							<m:Text text="{Name}" wrapping="false" />
+							<m:Text text="{eventos>Nro_descarga}" wrapping="false" />
 						</template>
 					</Column>
-					<Column
-						width="11rem"
-						filterProperty="Category"
-						defaultFilterOperator="StartsWith">
+					<Column width="11rem" filterProperty="Category" defaultFilterOperator="StartsWith">
 						<m:Label text="Ticket" />
 						<template>
-							<m:Text text="{Category}" wrapping="false" />
+							<m:Text text="{eventos>TICKE}" wrapping="false" />
 						</template>
 					</Column>
 					<Column width="9rem">
 						<m:Label text="Especie" />
 						<template>
-							<m:Link text="Show Image" href="{ProductPicUrl}" target="_blank"/>
+							<m:Text text="{eventos>CDSPC}" href="{ProductPicUrl}" target="_blank" />
 						</template>
 					</Column>
 					<Column width="9rem">
 						<m:Label text="Desc. especie" />
 						<template>
-							<m:Link text="Show Image" href="{ProductPicUrl}" target="_blank"/>
+							<m:Text text="{eventos>DSSPC}" href="{ProductPicUrl}" target="_blank" />
 						</template>
 					</Column>
-					<Column
-						id="availability2"
-						width="9rem"
-						filterProperty="Available"
-						showFilterMenuEntry="false"
-						defaultFilterOperator="EQ"
-						filterType="sap.ui.model.type.Boolean">
+					<Column width="9rem" filterProperty="Available">
 						<m:Label text="Cant. descargada" />
 						<template>
-							<m:ObjectStatus text="{Status}" state="{
-								path: 'Available',
-								formatter: '.formatAvailableToObjectState'
-							}"/>
+							<m:Input value="{eventos>CNPDS}" type="Number" showValueHelp="false" enabled="{eventos>/enabledCantPescDescargada}" visible="true" />
 						</template>
 					</Column>
-					<Column
-						id="price2"
-						width="9rem"
-						filterProperty="Price">
+					<Column id="price2" width="9rem" filterProperty="Price">
 						<m:Label text="Cant. declarada" />
 						<template>
-							<u:Currency value="{Price}" currency="{CurrencyCode}"/>
+							<m:Input value="{eventos>CNPCM}" type="Number" showValueHelp="false" enabled="{eventos>/enabledCantPescDeclDesc}" visible="true" />
 						</template>
 					</Column>
-					<Column
-						width="10rem"
-						hAlign="End"
-						filterProperty="Quantity"
-						filterType="sap.ui.model.type.Integer">
+					<Column width="12rem" hAlign="End" filterProperty="Quantity">
 						<m:Label text="Pto. Descarga" />
 						<template>
-							<m:Label text="{
-								path: 'Quantity',
-								type: 'sap.ui.model.type.Integer'
-							}" />
+							<m:ComboBox placeholder="Zona de pesca" items="{path:'combPuntoDescarga>/data', templateShareable:false}" editable="true" enabled="true" visible="true" width="100%" valueState="None" maxWidth="100%">
+								<m:items>
+									<core:Item key="{combPuntoDescarga>CDPDG}" text="{combPuntoDescarga>DSPDG}" />
+								</m:items>
+							</m:ComboBox>
 						</template>
 					</Column>
-					<Column
-						width="10rem"
-						hAlign="End"
-						filterProperty="Quantity"
-						filterType="sap.ui.model.type.Integer">
+					<Column width="10rem" hAlign="End" filterProperty="Quantity">
 						<m:Label text="Lado descarga" />
 						<template>
-							<m:Label text="{
-								path: 'Quantity',
-								type: 'sap.ui.model.type.Integer'
-							}" />
+							<m:Text text="{eventos>CDLDS}" href="{ProductPicUrl}" target="_blank" />
 						</template>
 					</Column>
-					<Column
-						width="10rem"
-						hAlign="End"
-						filterProperty="Quantity"
-						filterType="sap.ui.model.type.Integer">
+					<Column width="15rem" hAlign="End" filterProperty="Quantity">
 						<m:Label text="Fecha/hora inicio" />
 						<template>
-							<m:Label text="{
-								path: 'Quantity',
-								type: 'sap.ui.model.type.Integer'
-							}" />
+							<m:DateTimePicker design="Bold" value="{eventos>FIDES}{eventos>HIDES}" displayFormat="medium" required="false" valueStateText="Invalid entry" enabled="false" visible="true" valueFormat="yyyyMMddHHmmss" />
 						</template>
 					</Column>
-					<Column
-						width="10rem"
-						hAlign="End"
-						filterProperty="Quantity"
-						filterType="sap.ui.model.type.Integer">
+					<Column width="15rem" hAlign="End" filterProperty="Quantity">
 						<m:Label text="Fecha/hora fin" />
 						<template>
-							<m:Label text="{
-								path: 'Quantity',
-								type: 'sap.ui.model.type.Integer'
-							}" />
+							<m:DateTimePicker value="{eventos>FFDES}{eventos>HFDES}" displayFormat="medium" required="false" valueStateText="Invalid entry" enabled="false" visible="true" valueFormat="yyyyMMddHHmmss" />
 						</template>
 					</Column>
-					<Column
-						width="10rem"
-						hAlign="End"
-						filterProperty="Quantity"
-						filterType="sap.ui.model.type.Integer">
+					<Column width="15rem" hAlign="End" filterProperty="Quantity" filterType="sap.ui.model.type.Integer">
 						<m:Label text="Fecha de producción" />
 						<template>
-							<m:Label text="{
-								path: 'Quantity',
-								type: 'sap.ui.model.type.Integer'
-							}" />
+							<m:DateTimePicker value="{eventos>FECCONMOV}" enabled="{eventos>/enabledFechProdDesc}" displayFormat="medium" required="false" valueStateText="Invalid entry" visible="true" valueFormat="yyyyMMdd" />
 						</template>
 					</Column>
 				</columns>
-				
+
 			</Table>
-			<Table
-				id="table_pesc_desc_especie"
-				selectionMode="MultiToggle"
-				rows="{/ProductCollection}"
-				visibleRowCount="3"
-				enableCellFilter="{ui>/cellFilterOn}"
-				ariaLabelledBy="title">
+			<Table id="table_pesc_desc_especie" selectionMode="MultiToggle" rows="{eventos>/ListaPescaDescargada}" visibleRowCount="3" enableCellFilter="{ui>/cellFilterOn}" ariaLabelledBy="title">
 				<columns>
-					<Column
-						id="pde_col_EliminarDesc"
-						width="4rem">
+					<Column id="pde_col_EliminarDesc" width="4rem">
 						<m:Label text="" />
 						<template>
 							<m:Text text="{Name}" wrapping="false" />
 						</template>
 					</Column>
-					<Column
-						width="4rem">
+					<Column width="4rem">
 						<m:Label text="" />
 						<template>
 							<m:Text text="{Name}" wrapping="false" />
 						</template>
 					</Column>
-					<Column
-						width="11rem">
+					<Column width="11rem">
 						<m:Label text="Nro. descarga" />
 						<template>
-							<m:Text text="{Name}" wrapping="false" />
+							<m:Text text="{eventos>Nro_descarga}" wrapping="false" />
 						</template>
 					</Column>
 					<Column width="9rem">
 						<m:Label text="Especie" />
 						<template>
-							<m:Link text="Show Image" href="{ProductPicUrl}" target="_blank"/>
+							<m:Link text="{eventos>CDSPC}" href="{ProductPicUrl}" target="_blank" />
 						</template>
 					</Column>
 					<Column width="9rem">
 						<m:Label text="Desc. especie" />
 						<template>
-							<m:Link text="Show Image" href="{ProductPicUrl}" target="_blank"/>
+							<m:Text text="{eventos>DSSPC}" href="{ProductPicUrl}" target="_blank" />
 						</template>
 					</Column>
-					<Column
-						id="availability4"
-						width="9rem"
-						filterProperty="Available"
-						showFilterMenuEntry="false"
-						defaultFilterOperator="EQ"
-						filterType="sap.ui.model.type.Boolean">
+					<Column width="9rem" filterProperty="Available">
 						<m:Label text="Cant. descargada" />
 						<template>
-							<m:ObjectStatus text="{Status}" state="{
-								path: 'Available',
-								formatter: '.formatAvailableToObjectState'
-							}"/>
+							<m:Input value="{eventos>CNPDS}" type="Number" showValueHelp="false" enabled="{eventos>/enabledCantPescDescargada}" visible="true" />
 						</template>
 					</Column>
-					<Column
-						id="price4"
-						width="9rem"
-						filterProperty="Price">
+					<Column id="price4" width="9rem" filterProperty="Price">
 						<m:Label text="Cant. declarada" />
 						<template>
-							<u:Currency value="{Price}" currency="{CurrencyCode}"/>
+							<m:Input value="{eventos>CNPCM}" type="Number" showValueHelp="false" enabled="{eventos>/enabledCantPescDeclDesc}" visible="true" />
 						</template>
 					</Column>
 				</columns>
-				
+
 			</Table>
-			<Table
-				id="table_pesc_desc_CHD"
-				selectionMode="MultiToggle"
-				rows="{/ProductCollection}"
-				visibleRowCount="3"
-				enableCellFilter="{ui>/cellFilterOn}"
-				ariaLabelledBy="title">
+			<Table id="table_pesc_desc_CHD" selectionMode="MultiToggle" rows="{eventos>/ListaPescaDescargada}" visibleRowCount="3" enableCellFilter="{ui>/cellFilterOn}" ariaLabelledBy="title">
 				<columns>
-					<Column
-						id="pdCHD_col_BuscarDesc"
-						width="4rem">
+					<Column id="pdCHD_col_BuscarDesc" width="4rem">
 						<m:Label text="" />
 						<template>
 							<m:Text text="{Name}" wrapping="false" />
 						</template>
 					</Column>
-					<Column
-						id="pdCHD_col_EliminarDesc"
-						width="4rem">
+					<Column id="pdCHD_col_EliminarDesc" width="4rem">
 						<m:Label text="" />
 						<template>
 							<m:Text text="{Name}" wrapping="false" />
 						</template>
 					</Column>
-					<Column
-						width="11rem">
+					<Column width="11rem">
 						<m:Label text="Nro. descarga" />
 						<template>
-							<m:Text text="{Name}" wrapping="false" />
+							<m:Text text="{eventos>Nro_descarga}" wrapping="false" />
 						</template>
 					</Column>
-					<Column
-						width="11rem"
-						filterProperty="Category"
-						defaultFilterOperator="StartsWith">
+					<Column width="11rem" filterProperty="Category" defaultFilterOperator="StartsWith">
 						<m:Label text="Ticket" />
 						<template>
-							<m:Text text="{Category}" wrapping="false" />
+							<m:Text text="{eventos>TICKE}" wrapping="false" />
 						</template>
 					</Column>
 					<Column width="9rem">
 						<m:Label text="Especie" />
 						<template>
-							<m:Link text="Show Image" href="{ProductPicUrl}" target="_blank"/>
+							<m:Text text="{eventos>CDSPC}" href="{ProductPicUrl}" target="_blank" />
 						</template>
 					</Column>
 					<Column width="9rem">
 						<m:Label text="Desc. especie" />
 						<template>
-							<m:Link text="Show Image" href="{ProductPicUrl}" target="_blank"/>
+							<m:Text text="{eventos>DSSPC}" href="{ProductPicUrl}" target="_blank" />
 						</template>
 					</Column>
-					<Column
-						id="availability3"
-						width="9rem"
-						filterProperty="Available"
-						showFilterMenuEntry="false"
-						defaultFilterOperator="EQ"
-						filterType="sap.ui.model.type.Boolean">
+					<Column  width="9rem" filterProperty="Available">
 						<m:Label text="Cant. descargada" />
 						<template>
-							<m:ObjectStatus text="{Status}" state="{
-								path: 'Available',
-								formatter: '.formatAvailableToObjectState'
-							}"/>
+							<m:Input value="{eventos>CNPDS}" type="Number" showValueHelp="false" enabled="{eventos>/enabledCantPescDescargada}" visible="true" />
 						</template>
 					</Column>
-					<Column
-						id="price3"
-						width="9rem"
-						filterProperty="Price">
+					<Column id="price3" width="9rem" filterProperty="Price">
 						<m:Label text="Cant. pesca" />
 						<template>
-							<u:Currency value="{Price}" currency="{CurrencyCode}"/>
+							<m:Text text="{eventos>CNPDS}" target="_blank" />
 						</template>
 					</Column>
-					<Column
-						width="10rem"
-						hAlign="End"
-						filterProperty="Quantity"
-						filterType="sap.ui.model.type.Integer">
+					<Column width="10rem" hAlign="End" filterProperty="Quantity">
 						<m:Label text="Cant. declarada" />
 						<template>
-							<m:Label text="{
-								path: 'Quantity',
-								type: 'sap.ui.model.type.Integer'
-							}" />
+							<m:Input value="{eventos>CNPCM}" type="Number" showValueHelp="false" enabled="{eventos>/enabledCantPescDeclDesc}" visible="true" />
 						</template>
 					</Column>
-					<Column
-						width="10rem"
-						hAlign="End"
-						filterProperty="Quantity"
-						filterType="sap.ui.model.type.Integer">
+					<Column width="10rem" hAlign="End" filterProperty="Quantity">
 						<m:Label text="Lado descarga" />
 						<template>
-							<m:Label text="{
-								path: 'Quantity',
-								type: 'sap.ui.model.type.Integer'
-							}" />
+							<m:Text text="{eventos>CDLDS}" href="{ProductPicUrl}" target="_blank" />
 						</template>
 					</Column>
-					<Column
-						width="10rem"
-						hAlign="End"
-						filterProperty="Quantity"
-						filterType="sap.ui.model.type.Integer">
+					<Column width="10rem" hAlign="End" filterProperty="Quantity">
 						<m:Label text="Fecha de producción" />
 						<template>
-							<m:Label text="{
-								path: 'Quantity',
-								type: 'sap.ui.model.type.Integer'
-							}" />
+							<m:DateTimePicker value="{eventos>FECCONMOV}" enabled="{eventos>/enabledFechProdDesc}" displayFormat="medium" required="false" valueStateText="Invalid entry" visible="true" valueFormat="yyyyMMdd" />
 						</template>
 					</Column>
 				</columns>
-				
+
 			</Table>
 
 		</m:content>

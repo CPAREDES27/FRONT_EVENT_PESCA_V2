@@ -20,11 +20,9 @@
 									<Label text="Zona de pesca" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<ComboBox id="cb_ZonaPesca" placeholder="Zona de pesca" editable="true" enabled="true" visible="true" width="100%" valueState="None" maxWidth="100%">
+									<ComboBox id="cb_ZonaPesca" placeholder="Zona de pesca" items="{combZonaPesca>/data}" editable="true" enabled="true" visible="true" width="100%" valueState="None" maxWidth="100%">
 										<items>
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
+											<core:Item key="{combZonaPesca>id}" text="{combZonaPesca>descripcion}" />
 										</items>
 									</ComboBox>
 									<Text text="Zona1" design="Bold" width="25%"/>
@@ -48,9 +46,7 @@
 									<Label text="Planta" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<Input type="Text" showValueHelp="false" enabled="false" visible="true" width="100%" required="false" maxLength="0"/>
-									<Button id="btn_Planta" text="" type="Default" icon="sap-icon://sys-find" iconFirst="true" width="50%" enabled="true" visible="true" iconDensityAware="false" />
-									<Text text="CALLAO" width="100%" textDirection="Inherit"/>
+									<Input type="Text" showValueHelp="false" enabled="false" visible="true" width="70%" required="false" maxLength="0"/>
 								</form:fields>
 							</form:FormElement>
 						</form:formElements>

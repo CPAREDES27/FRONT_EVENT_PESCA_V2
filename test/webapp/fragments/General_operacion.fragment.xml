@@ -12,11 +12,9 @@
 									<Label text="Estado de operación:" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true"/>
 								</form:label>
 								<form:fields>
-									<ComboBox id="cmb_estaOperacion" placeholder="Estado de operación" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
+									<ComboBox id="cmb_estaOperacion" items="{combEstadoOperacion>/data}" placeholder="Estado de operación" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
 										<items>
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
+											<core:Item key="{combEstadoOperacion>id}" text="{combEstadoOperacion>descripcion}" />
 										</items>
 									</ComboBox>
 								</form:fields>
@@ -26,11 +24,9 @@
 									<Label text="Tipo de descarga" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true"/>
 								</form:label>
 								<form:fields>
-									<ComboBox id="cb_tipoDescarga" placeholder="Tipo de descarga" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
+									<ComboBox id="cb_tipoDescarga" items="{combTipoDescarga>/data}" placeholder="Tipo de descarga" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
 										<items>
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
+											<core:Item key="{combTipoDescarga>id}" text="{combTipoDescarga>descripcion}" />
 										</items>
 									</ComboBox>
 								</form:fields>
@@ -40,11 +36,9 @@
 									<Label text="Motivo de no pesca" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true"/>
 								</form:label>
 								<form:fields>
-									<ComboBox placeholder="Motivo de no pesca" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
+									<ComboBox placeholder="Motivo de no pesca" items="{combMotivoNoPesca>/data}" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
 										<items>
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
+											<core:Item key="{combMotivoNoPesca>id}" text="{combMotivoNoPesca>descripcion}" />
 										</items>
 									</ComboBox>
 								</form:fields>
@@ -78,11 +72,9 @@
 									<Label text="Estado sist. frio" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 								</form:label>
 								<form:fields>
-									<ComboBox id="ip_sistema_frio" placeholder="Estado sist. frio" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
+									<ComboBox id="ip_sistema_frio" items="{combSistemaFrio>/data}" placeholder="Estado sist. frio" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
 										<items>
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
+											<core:Item key="{combSistemaFrio>id}" text="{combSistemaFrio>descripcion}" />
 										</items>
 									</ComboBox>
 								</form:fields>
@@ -96,11 +88,9 @@
 									<Label text="Motivo de limitación:" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true"/>
 								</form:label>
 								<form:fields>
-									<ComboBox id="cmb_motivoLim" placeholder="Motivo de limitación" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
+									<ComboBox id="cmb_motivoLim" items="{combMotivoLim>/data}" placeholder="Motivo de limitación" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
 										<items>
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
-											<core:Item text="Item" enabled="true" key="Item" />
+											<core:Item key="{combMotivoLim>id}" text="{combMotivoLim>descripcion}" />
 										</items>
 									</ComboBox>
 								</form:fields>

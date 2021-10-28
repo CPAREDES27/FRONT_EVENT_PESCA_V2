@@ -2,7 +2,10 @@
 
 	<Panel id="0010" expandable="false">
 		<content>
-			<Table width="auto" noDataText="No data" mode="None" showSeparators="All" growing="true" growingThreshold="20" growingScrollToLoad="true" class="sapUiResponsiveMargin">
+			<Table id= "prue" width="auto" noDataText="No data" mode="MultiSelect"
+			 showSeparators="All" growing="true" 
+			 items="{path:'eventos>/ListaHorometros',templateShareable:true}"
+			 growingThreshold="20" growingScrollToLoad="true" class="sapUiResponsiveMargin">
 				<infoToolbar>
 					<Toolbar width="100%" height="auto" design="Auto" visible="false" enabled="true">
 						<content>
@@ -35,23 +38,9 @@
 				<items>
 					<ColumnListItem type="Inactive">
 						<cells>
-							<Text text="Motor Auxiliar 1" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Input value="100" type="Text" showValueHelp="false" enabled="true" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
-							<CheckBox text="" selected="true" editable="true" enabled="true" visible="true" width="auto" textDirection="Inherit" wrapping="false" useEntireWidth="true" />
-						</cells>
-					</ColumnListItem>
-					<ColumnListItem type="Inactive">
-						<cells>
-							<Text text="Panga" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Input value="200" type="Text" showValueHelp="false" enabled="true" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
-							<CheckBox text="" selected="false" editable="true" enabled="true" visible="true" width="auto" textDirection="Inherit" wrapping="false" useEntireWidth="true" />
-						</cells>
-					</ColumnListItem>
-					<ColumnListItem type="Inactive">
-						<cells>
-							<Text text="Flujometro de Panga" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Input value="30" type="Text" showValueHelp="false" enabled="true" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
-							<CheckBox text="" selected="false" editable="true" enabled="true" visible="true" width="auto" textDirection="Inherit" wrapping="false" useEntireWidth="true" />
+							<Text text="{eventos>descTipoHorom}" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
+							<Input value="{eventos>lectura}" type="Text" showValueHelp="false" enabled="{eventos>readOnly}" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
+							<CheckBox text="" select="onCheckBoxSelected" editable="true" enabled="{eventos>/enabledAveriado}" selected="{=${eventos>lectura} === 'A' ? true : false }" />
 						</cells>
 					</ColumnListItem>
 				</items>

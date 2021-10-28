@@ -10,6 +10,7 @@ sap.ui.define([
     "./Accidente",
     "./Biometria",
     "../model/textValidaciones",
+    "../model/eventosModel",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
     "sap/ui/integration/library",
@@ -27,6 +28,7 @@ sap.ui.define([
     Accidente,
     Biometria,
     textValidaciones,
+    eventosModel,
     JSONModel,
     MessageToast,
     integrationLibrary,
@@ -42,6 +44,7 @@ sap.ui.define([
         onInit: function () {
 
             this.formEnableAtrib = true;
+
             /********* Carga de variables globales **********/
             this._utilNroEventoBio = "001";
             this._utilNroEventoIncid = "001";
@@ -58,8 +61,7 @@ sap.ui.define([
             this._indicadorPropXPlanta = "P";
             this._soloLectura = false;
             this._EsperaMareaAnt = [{ "id": "0" }, { "id": "1" }];
-            this._listaEventos = [{ "Numero": "1", "id": "0", "TipoEvento": "7", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "" }, { "Numero": "2", "id": "1", "TipoEvento": "2", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "" }];
-            this._listaHorometros = [{ "id": "0", "TipoEvento": "7", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba" }, { "id": "1", "TipoEvento": "2", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba" }];
+            this._listaEventos = [{ "Numero": "1", "id": "0", "TipoEvento": "7", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[] }, { "Numero": "2", "id": "1", "TipoEvento": "2", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[] }];
             this._FormMarea = { "EstMarea": "C", "EstCierre": "A", "FecCierre": "02/24/2021", "HorCierre": "17:04:50", "ObseAdicional": "Prueba", "CenEmbarcacion": "T059" };
             this._mareaReabierta = false;
             this._elementAct = "1";
@@ -73,7 +75,8 @@ sap.ui.define([
             /************ Listas iniciales vacias **************/
             this._ConfiguracionEvento = {};
             this._cmbPuntosDescarga = [];
-
+            /************ Listas carga de dominios **************/
+            this._ConfiguracionEvento = {};
 
             /************ Carga de fragments de los eventos **************/
             let self = this;
@@ -85,21 +88,85 @@ sap.ui.define([
                 }
             })
 
-            var cardManifests = new JSONModel();
-            var oCitiesModel = new JSONModel(),
-                oProductsModel = new JSONModel();
-
-            cardManifests.loadData("./model/cardManifests.json");
-            oCitiesModel.loadData("./model/cities.json");
-            oProductsModel.loadData("./model/products.json");
-
-            this.getView().setModel(cardManifests, "manifests");
-            this.getView().setModel(oCitiesModel, "cities");
+            // var cardManifests = new JSONModel();
+            var EventosModelo = new JSONModel();
+            var oProductsModel = new JSONModel();
+                
             this.getView().setModel(oProductsModel, "products");
+            this.getView().setModel(EventosModelo, "eventos");
 
-            // let s = await  this.cargarServiciosPreEvento();
-            // console.log(s);
+            EventosModelo.setData(this._listaEventos[this._elementAct]);
+            oProductsModel.setData(eventosModel);
+            oProductsModel.setProperty("/enabledEspecie", true);
+            EventosModelo.setProperty("/enabledBodCantpesca", true);
+            EventosModelo.setProperty("/enabledCantPescDeclarada", true);
 
+            EventosModelo.setProperty("/enabledCantPescDescargada", true);
+            EventosModelo.setProperty("/enabledCantPescDeclDesc", true);
+            EventosModelo.setProperty("/enabledPuntoDescarga", true);
+            EventosModelo.setProperty("/enabledFechProdDesc", true);
+            EventosModelo.setProperty("/enabledAveriado", true);
+            EventosModelo.setProperty("/enabledCantEquipamiento", true);
+
+
+        },
+        cargaModelos: function () {
+
+            this.getView().getModel("eventos").setProperty("/ListaBodegas", this._listaEventos[this._elementAct].ListaBodegas);
+            let lst_PescaDescargada = this._listaEventos[this._elementAct].ListaPescaDescargada;
+            let lst_Horometro = this._listaEventos[this._elementAct].ListaHorometros;
+            if(lst_PescaDescargada.length > 0){lst_PescaDescargada[0].Nro_descarga = this._nroDescarga;}
+
+            //combo Zona de Pesca
+            var combZonaPesca = new JSONModel(this._listasServicioCargaIni[10].data[0]);
+            this.getView().setModel(combZonaPesca, "combZonaPesca");
+            this.getView().getModel("combZonaPesca").updateBindings(true);
+
+            //combo Estado Operacion
+            var combEstadoOperacion = new JSONModel(this._listasServicioCargaIni[11].data[0]);
+            this.getView().setModel(combEstadoOperacion, "combEstadoOperacion");
+            this.getView().getModel("combEstadoOperacion").updateBindings(true);
+
+            //combo Motivo Limitacion
+            var combMotivoLim = new JSONModel(this._listasServicioCargaIni[12].data[0]);
+            this.getView().setModel(combMotivoLim, "combMotivoLim");
+            this.getView().getModel("combMotivoLim").updateBindings(true);
+
+            //combo Tipo de descarga
+            var combTipoDescarga = new JSONModel(this._listasServicioCargaIni[13].data[0]);
+            this.getView().setModel(combTipoDescarga, "combTipoDescarga");
+            this.getView().getModel("combTipoDescarga").updateBindings(true);
+
+            //combo Motivo no pesca
+            var combMotivoNoPesca = new JSONModel(this._listasServicioCargaIni[14].data[0]);
+            this.getView().setModel(combMotivoNoPesca, "combMotivoNoPesca");
+            this.getView().getModel("combMotivoNoPesca").updateBindings(true);
+
+            //combo Motivo de espera
+            var combMotivoEspera = new JSONModel(this._listasServicioCargaIni[15].data[0]);
+            this.getView().setModel(combMotivoEspera, "combMotivoEspera");
+            this.getView().getModel("combMotivoEspera").updateBindings(true);
+
+            //combo Sistema Frio
+            var combSistemaFrio = new JSONModel(this._listasServicioCargaIni[16].data[0]);
+            this.getView().setModel(combSistemaFrio, "combSistemaFrio");
+            this.getView().getModel("combSistemaFrio").updateBindings(true);
+
+            //combo Punto de descarga
+            var combPuntoDescarga = new JSONModel(JSON.parse(this._listasServicioCargaIni[6]));
+            this.getView().setModel(combPuntoDescarga, "combPuntoDescarga");
+            this.getView().getModel("combPuntoDescarga").updateBindings(true);
+
+            //AYUDA DE BUSQUEDA ESPECIES
+            var popupEspecies = new JSONModel(this._listasServicioCargaIni[17].data[0]);
+            this.getView().setModel(popupEspecies, "popupEspecies");
+            this.getView().getModel("popupEspecies").updateBindings(true);
+
+            this.getView().getModel("eventos").setProperty("/ListaPescaDescargada", lst_PescaDescargada);
+            this.getView().getModel("eventos").setProperty("/ListaPescaDeclarada", this._listaEventos[this._elementAct].ListaPescaDeclarada);
+            this.getView().getModel("eventos").setProperty("/ListaHorometros", this._listaEventos[this._elementAct].ListaHorometros);
+            this.getView().getModel("eventos").setProperty("/ListaEquipamiento", this._listaEventos[this._elementAct].ListaEquipamiento);
+            this.getView().getModel("eventos").updateBindings(true);
         },
 
         cargarServiciosPreEvento: function () {
@@ -116,8 +183,16 @@ sap.ui.define([
             //var s9 = TasaBackendService.obtenerListaSiniestros(this._nroMarea, this._nroEvento); ---> PENDIENTE EN REVISAR
             var s10 = TasaBackendService.obtenerListaHorometro(this._FormMarea.CenEmbarcacion, this._tipoEvento, this._nroMarea, this._nroEvento);
             var s11 = TasaBackendService.obtenerConfiguracionEvento();
+            var s12 = TasaBackendService.obtenerDominio("1ZONAPESCA");
+            var s13 = TasaBackendService.obtenerDominio("ZESOPE");
+            var s14 = TasaBackendService.obtenerDominio("ZCDMLM");
+            var s15 = TasaBackendService.obtenerDominio("ZCDTDS");
+            var s16 = TasaBackendService.obtenerDominio("ZCDMNP");
+            var s17 = TasaBackendService.obtenerDominio("ZCDMES");
+            var s18 = TasaBackendService.obtenerDominio("ZD_SISFRIO");
+            var s19 = TasaBackendService.obtenerDominio("ZDO_ESPECIES");
 
-            return Promise.all([s1, s2, s3, s4, s5, s6, s7, s8, s10, s11]).then(values => {
+            return Promise.all([s1, s2, s3, s4, s5, s6, s7, s8, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19]).then(values => {
                 self._tipoPreservacion = JSON.parse(values[0]).data[0].CDTPR;
                 self._listasServicioCargaIni = values;
                 console.log(self._listasServicioCargaIni);
@@ -147,7 +222,7 @@ sap.ui.define([
 
             var o_fragment6 = new Distribucion(this.getView(), "Distribucion");
             var o_fragment7 = new PescaDeclarada(this.getView(), "PescaDeclarada");
-            var o_fragment8 = new PescaDescarga(this.getView(), "PescaDescargada");
+            var o_fragment8 = new PescaDescarga(this.getView(), "PescaDescargada",this);
             var o_fragment9 = new Horometro(this.getView(), "Horometro");
             var o_fragment10 = new Equipamiento(this.getView(), "Equipamiento");
             var o_fragment11 = new Siniestro(this.getView(), "Siniestro");
@@ -173,7 +248,9 @@ sap.ui.define([
             if (this._listasServicioCargaIni[9] ? true : false) {
                 this._ConfiguracionEvento = this._listasServicioCargaIni[9];
             }
+            var ss = this._listasServicioCargaIni[11].data[0].data;
             this.prepararRevisionEvento(false);
+            this.cargaModelos();
 
         },
 
@@ -300,13 +377,14 @@ sap.ui.define([
             if (this._listaEventos[this._elementAct].ListaPescaDescargada[0].CantPescaDeclarada ? true : false) {
                 cantTotalDeclRest = cantTotalDeclRest + Number(this._listaEventos[this._elementAct].ListaPescaDescargada[0].CantPescaDeclarada);
             }
-            //wdContext.currentUtilsElement().setCantPescaDeclaRestante(cantTotalDeclRest);
+
+            textValidaciones.CantPescaDeclaRestante = cantTotalDeclRest;
 
 
         },
 
         prepararVista: function (nuevoEvento) {
-
+            //this.resetView();
             var exisEspMarAnt = false;
             if (this._EsperaMareaAnt != null && this._EsperaMareaAnt.length > 0) { exisEspMarAnt = true; } else { exisEspMarAnt = false; }
 
@@ -535,10 +613,10 @@ sap.ui.define([
                 }
 
                 if (!nuevoEvento) {
-                    this.getView().byId("pdt_col_EliminarDesc").setVisible(false);
+                    this.getView().byId("pdt_col_EliminarDesc").setVisible(true); //cambiar a false
                     this.getView().byId("pde_col_EliminarDesc").setVisible(false);
                     this.getView().byId("pdCHD_col_EliminarDesc").setVisible(false);
-                    //wdContext.currentReadOnlyElement().setFechProdDesc(true);  ---> este dato se relacionara cuando se carga la data de la tabla de pesca descargada
+                    this.getView().getModel("eventos").setProperty("/enabledFechProdDesc", false);
                 }
             }
 
@@ -548,7 +626,7 @@ sap.ui.define([
                 this.getView().byId("col_porc_pesc_desc").setVisible(true);
                 this.getView().byId("ext_pesca_declarada").setVisible(true);
 
-                //wdContext.currentReadOnlyElement().setCantPescDeclarada(true); ---> este dato se relacionara cuando se carga la data de la tabla de pesca declarada en en tab pesca declarada
+                this.getView().getModel("eventos").setProperty("/enabledCantPescDeclarada", false);
                 this.getView().byId("idDistribucion").setVisible(true);
             }
 
@@ -579,7 +657,7 @@ sap.ui.define([
                     this.getView().byId("pdCHD_col_EliminarDesc").setVisible(false);
 
                     this.getView().byId("ext_siniestro").setVisible(false);
-                    //wdContext.currentReadOnlyElement().setFechProdDesc(true);---> este dato se relacionara cuando se carga la data de la tabla de pesca descargada
+                    this.getView().getModel("eventos").setProperty("/enabledFechProdDesc", false);
                 }
             }
 
@@ -592,7 +670,7 @@ sap.ui.define([
                 //Tab Distribucion
                 if (this._tipoEvento == textValidaciones.TIPOEVENTOCALA && this._motivoMarea == "1") {
                     this.getView().byId("FechaEnvaseIni").setVisible(true);
-                    //wdContext.currentReadOnlyElement().setCantPescaBodega(false); --> se setea en la tabla del tab de distribucion
+                    this.getView().getModel("eventos").setProperty("/enabledBodCantpesca", true);
                 }
             }
 
@@ -609,10 +687,10 @@ sap.ui.define([
                 var miliDuracion = Number(miliFechHoraIni) + Number(hour24);
 
                 if (this._IsRolRadOpe) {
-                    if (miliDuracion <= miliFecHoraAct) {
+                    if (miliDuracion <= miliFecHoraAct && this._listaEventos[this._elementAct].ListaHorometros.length > 0) {
                         this.getView().byId("i_stockCombustible").setEnabled(false);
-                        for (var j = 0; j < this._listaHorometros.length; j++) {
-
+                        for (var j = 0; j < this._listaEventos[this._elementAct].ListaHorometros.length; j++) {
+                            this._listaEventos[this._elementAct].ListaHorometros[j].readOnly = false;
                             //nodeHorometros.currentHorometrosElement().setReadOnly(true); --> seteo por cada elemento de la tabla de horometro
                         }
                     }
@@ -626,12 +704,12 @@ sap.ui.define([
 
                     this.getView().byId("ip_sistema_frio").setEnabled(false);
                     this.getView().byId("ip_observacion").setEnabled(false);
-                    //wdContext.currentReadOnlyElement().setAveriado(true); --> al momento de cargar la tabla en el tab de horometros
-                    //wdContext.currentReadOnlyElement().setCantEquipamiento(true); --> al momento de cargar la tabla en el tab de equipamiento
+                    this.getView().getModel("eventos").setProperty("/enabledAveriado", false);
+                    this.getView().getModel("eventos").setProperty("/enabledCantEquipamiento", false);
                     this.getView().byId("ip_muestra").setEnabled(false);
-                    //wdContext.currentReadOnlyElement().setCantPescaBodega(true); --> se cargara la tabla en el tab de distribucion
-                    //wdContext.currentReadOnlyElement().setCantPescDescargada(true); --> se carga la tabla en el tab pesca descargada
-                    //wdContext.currentReadOnlyElement().setCantPescDeclDesc(true); --> se carga la tabla en el tab pesca descargada
+                    this.getView().getModel("eventos").setProperty("/enabledBodCantpesca", false);
+                    this.getView().getModel("eventos").setProperty("/enabledCantPescDescargada", false);
+                    this.getView().getModel("eventos").setProperty("/enabledCantPescDeclDesc", false);
                 }
             }
 
@@ -727,7 +805,7 @@ sap.ui.define([
         },
         obtenerHorometros: function () {
             if (this._listasServicioCargaIni[8] ? true : false) {
-                this._listaEventos[this._elementAct].ListaHorometros = this._listasServicioCargaIni[8];
+                this._listaEventos[this._elementAct].ListaHorometros = this._listasServicioCargaIni[8].lista;
             }
 
         },
@@ -765,7 +843,7 @@ sap.ui.define([
                         }
                     } else {
                         this.obtenerDetalleEvento();
-                        if (this._listaEventos[j].ListaPescaDescargada ? true : false) {
+                        if (this._listaEventos[j].ListaPescaDescargada[0] ? true : false) {
                             if (this._listaEventos[j].ListaPescaDescargada[0].CantPescaDeclarada ? true : false){
                                 cantTotal = cantTotal + Number[this._listaEventos[j].ListaPescaDescargada[0].CantPescaDeclarada];
                             }
@@ -801,6 +879,76 @@ sap.ui.define([
             this.getView().byId("ip_latitud2").setEnabled(false);
             this.getView().byId("ip_longitud1").setEnabled(false);
             this.getView().byId("ip_longitud2").setEnabled(false);
+
+            this.getView().getModel("products").setProperty("enabledEspecie", false);
+            this.getView().getModel("eventos").setProperty("/enabledBodCantpesca", false);
+
+        },
+
+        resetView: function () {
+            this.getView().byId("cb_ZonaPesca").setEnabled(false);
+            this.getView().byId("dtp_fechaIniCala").setEnabled(false);
+            this.getView().byId("dtf_fechaIniEnv").setEnabled(false);
+            this.getView().byId("dtf_FechaProduccion").setEnabled(false);
+            this.getView().byId("dtp_fechaFinCala").setEnabled(false);
+            this.getView().byId("dtf_fechaFinEnv").setEnabled(false);
+            this.getView().byId("cmb_estaOperacion").setEnabled(false);
+            this.getView().byId("cb_tipoDescarga").setEnabled(false);
+            this.getView().byId("i_temperaturaMar").setEnabled(false);
+            this.getView().byId("i_stockCombustible").setEnabled(false);
+            this.getView().byId("ip_muestra").setEnabled(false);
+            this.getView().byId("ip_sistema_frio").setEnabled(false);
+            this.getView().byId("cmb_motivoLim").setEnabled(false);
+            this.getView().byId("cmb_motivoEspera").setEnabled(false);
+            this.getView().byId("ip_observacion").setEnabled(false);
+            this.getView().byId("ip_latitud1").setEnabled(false);
+            this.getView().byId("ip_latitud2").setEnabled(false);
+            this.getView().byId("ip_longitud1").setEnabled(false);
+            this.getView().byId("ip_longitud2").setEnabled(false);
+
+            this.getView().getModel("eventos").setProperty("/enabledBodCantpesca", false);
+            this.getView().getModel("eventos").setProperty("/enabledCantPescDeclarada", false);
+            this.getView().getModel("eventos").setProperty("/enabledCantPescDescargada", false);
+            this.getView().getModel("eventos").setProperty("/enabledCantPescDeclDesc", false);
+            this.getView().getModel("eventos").setProperty("/enabledPuntoDescarga", false);
+            this.getView().getModel("eventos").setProperty("/enabledFechProdDesc", false);
+            this.getView().getModel("eventos").setProperty("/enabledAveriado", false);
+            this.getView().getModel("eventos").setProperty("/enabledCantEquipamiento", false);
+
+            this.getView().byId("FechaEnvaseIni").setVisible(false);
+            this.getView().byId("FechaEnvaseFin").setVisible(false);
+            this.getView().byId("fe_Empresa").setVisible(false);
+            this.getView().byId("btn_Planta").setVisible(false);
+            this.getView().byId("fe_ZonaPesca").setVisible(false);
+            this.getView().byId("f_LatitudLongitud").setVisible(false);
+            this.getView().byId("fe_muestra").setVisible(false);
+            this.getView().byId("fe_fechaIniCala").setVisible(false);
+            this.getView().byId("fe_fechaFinCala").setVisible(false);
+            this.getView().byId("fe_FechaProduccion").setVisible(false);
+            this.getView().byId("fe_fechaArribo").setVisible(false);
+            this.getView().byId("fe_MotiNoPesca").setVisible(false);
+            this.getView().byId("0004").setVisible(false);
+            this.getView().byId("0003").setVisible(false);
+            this.getView().byId("fe_estadoOperacion").setVisible(false);
+            this.getView().byId("fe_tipoDescarga").setVisible(false);
+            this.getView().byId("fe_stockCombustible").setVisible(false);
+            this.getView().byId("fe_motivoLimitacion").setVisible(false);
+            this.getView().byId("fe_temperaturaMar").setVisible(false);
+            this.getView().byId("fe_sistema_frio").setVisible(false);
+            this.getView().byId("fe_observacioAdic").setVisible(false);
+            this.getView().byId("clm_moda_pescDecl").setVisible(false);
+            this.getView().byId("ext_pesc_desc").setVisible(false);
+            this.getView().byId("table_pesc_desc_especie").setVisible(false);
+            this.getView().byId("table_pesc_desc_CHD").setVisible(false);
+            this.getView().byId("table_pesc_desc_ticket").setVisible(false);
+            this.getView().byId("pdt_col_BuscarDesc").setVisible(false);
+            this.getView().byId("pdCHD_col_BuscarDesc").setVisible(false);
+            this.getView().byId("pdt_col_EliminarDesc").setVisible(true);
+            this.getView().byId("pde_col_EliminarDesc").setVisible(false);
+            this.getView().byId("pdCHD_col_EliminarDesc").setVisible(false);
+            this.getView().byId("col_porc_pesc_desc").setVisible(false);
+            this.getView().byId("ext_pesca_declarada").setVisible(false);
+            this.getView().byId("ext_siniestro").setVisible(false);
 
         }
 

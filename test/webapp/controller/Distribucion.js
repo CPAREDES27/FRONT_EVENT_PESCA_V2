@@ -19,12 +19,6 @@ sap.ui.define([
             this._oControl = sap.ui.xmlfragment(oView.getId(), "com.tasa.test.fragments."+ sFragName,this);
             this._bInit = false;
 
-            this._oView.byId("P02").addColumn( new sap.m.Column({
-                header: new sap.m.Label({
-                    text:"hi" //data[0].KURZNAME
-                })
-            }));
-
 
         },
         onButtonPress3:function(o_event){

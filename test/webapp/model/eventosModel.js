@@ -2,19 +2,29 @@ sap.ui.define([], function () {
 	"use strict";
 	var eventos =
 		{
-			INDIC_PROPIEDAD_PROPIOS: "P",
-			INDIC_PROPIEDAD_TERCEROS: "T",
-			TIPOEVENTOCALA: "3",
-			TIPOEVENTODESCARGA: "6",
-			TIPOEVENTOSINIESTRO: "8",
-			TIPOEVENTOACCIDENTE: "9",
-			TIPOEVENTOZARPE: "1",
-			TIPOEVENTOLLEGADAZONA: "2",
-			TIPOEVENTOESPERA: "7",
-			TIPOEVENTOARRIBOPUE: "5",
-			TIPOEVENTOSALIDAZONA: "4",
-			TIPOEVENTOHOROMETRO: "H",
-			TIPOEVENTOTRASVASE: "T"
+			"productItems": [
+				{
+					"title": "Notebook HT",
+					"subtitle": "ID23452256-D44",
+					"revenue": "27.25K EUR",
+					"status": "success",
+					"statusSchema": "Success"
+				},
+				{
+					"title": "Notebook XT",
+					"subtitle": "ID27852256-D47",
+					"revenue": "7.35K EUR",
+					"status": "exceeded",
+					"statusSchema": "Error"
+				},
+				{
+					"title": "Notebook ST",
+					"subtitle": "ID123555587-I05",
+					"revenue": "22.89K EUR",
+					"status": "warning",
+					"statusSchema": "Warning"
+				}
+			]
 			
 		}
 

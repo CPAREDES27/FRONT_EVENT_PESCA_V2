@@ -333,7 +333,72 @@ sap.ui.define([
                 var data = JSON.parse(response);
                 return data;
             });
+        },
+        obtenerListaDescargaPopUp: function(p_options){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["NRDES", "TICKE", "CDTPC", "CDPTA", "DSPTA", "CDEMB", "NMEMB", "CDLDS", "CDSPC", "DSSPC", "CNPDS", 
+			"FIDES", "HIDES", "FFDES", "HFDES", "PESACUMOD","ESDES", "WEPTA", "MREMB"];
+            sBody.option = [];
+            sBody.options = p_options
+            sBody.tabla = "ZV_FLDS";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+
+
+        },
+        obtenerListaDescargaCHDPopUp: function(p_options){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["NRO_ASIGNACION", "CDEMB", "NMEMB", "MREMB", "CDPTA", "DSPTA", "WERKS", "CANT_RECIBIDA", "ESPECIE", 
+            "FEPROD", "FECLLEGA", "HORLLEGA", "FECINIBOD", "HORINIBOD", "MANDT"];
+            sBody.option = [];
+            sBody.options = p_options
+            sBody.tabla = "ZV_FLAE";
+            return this.http(uri).post(null, sBody).then(function(response){
+                return response;
+            });
+
+
+        },
+        eliminarPescaDescargada: function(marea, numero){
+            var uri = UtilService.getHostService() + "/api/calendariotemporadapesca/Eliminar";
+            var sBody = UtilService.getElimPescaDesc();
+            sBody.i_table = "ZFLEVN";
+            sBody.t_data = "|" + marea + "|" + numero;
+            return this.http(uri).post(null, sBody).then(function(response){
+                var data = JSON.parse(response);
+                return data;
+            });
+        },
+        actualizarPescaDescargada: function(marea, numero){
+            let array = [];
+            array.push({
+                cmopt: "NRMAR = " + marea + " AND NREVN = " + numero,
+                cmset:"NRDES = '' FIEVN = '' HIEVN = '' FFEVN = '' HFEVN = ''",
+                nmtab:"ZFLEVN"
+            });
+            var uri = UtilService.getHostService() + "/api/General/Update_Camp_Table/";
+            var sBody = UtilService.getActuaPescaDesc();
+            sBody.str_set = array;
+            return this.http(uri).post(null, sBody).then(function(response){
+                var data = JSON.parse(response);
+                return data;
+            });
+        },
+        anularDescargaRFC: function(NroDescarga){
+            var uri = UtilService.getHostService() + "/api/eventospesca/AnularDescarga/";
+            var sBody = UtilService.getAnularDescRFC();
+            sBody.p_nrdes = NroDescarga;
+            return this.http(uri).post(null, sBody).then(function(response){
+                var data = JSON.parse(response);
+                return data;
+            });
         }
+
 
     });
 

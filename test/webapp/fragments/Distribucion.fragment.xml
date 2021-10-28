@@ -2,7 +2,10 @@
 
 	<Panel id="0006" expandable="false">
 		<content>
-			<Table id="P02" width="auto" noDataText="No data" mode="None" showSeparators="All" growing="true" growingThreshold="20" growingScrollToLoad="true" class="sapUiResponsiveMargin">
+			<Table id="P02" width="auto" noDataText="No data" mode="None" 
+			items="{eventos>/ListaBodegas}"
+			showSeparators="All" growing="true" growingThreshold="20" 
+			growingScrollToLoad="true" class="sapUiResponsiveMargin">
 				<infoToolbar>
 					<Toolbar width="100%" height="auto" design="Auto" visible="false" enabled="true">
 						<content>
@@ -47,29 +50,11 @@
 				<items>
 					<ColumnListItem type="Inactive">
 						<cells>
-							<Text text="Bodega1" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="Descripcion1" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="200" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Input value="100" type="Text" showValueHelp="false" enabled="true" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
-							<Text text="TN" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-						</cells>
-					</ColumnListItem>
-					<ColumnListItem type="Inactive">
-						<cells>
-							<Text text="Bodega2" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="Descripcion2" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="300" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Input value="200" type="Text" showValueHelp="false" enabled="true" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
-							<Text text="TN" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-						</cells>
-					</ColumnListItem>
-					<ColumnListItem type="Inactive">
-						<cells>
-							<Text text="Bodega3" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="Descripcion3" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="400" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Input value="100" type="Text" showValueHelp="false" enabled="true" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
-							<Text text="TN" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
+							<Text text="{eventos>CDBOD}" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
+							<Text text="{eventos>DSBOD}" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
+							<Text text="{eventos>CAPES}" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
+							<Input  type="Text" showValueHelp="false" enabled="{eventos>/enabledBodCantpesca}" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
+							<Text text="TM" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
 						</cells>
 					</ColumnListItem>
 				</items>

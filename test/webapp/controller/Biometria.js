@@ -1,9 +1,17 @@
 sap.ui.define([
+    'sap/ui/model/FilterOperator',
+    'sap/ui/model/Filter',
+    "sap/ui/core/syncStyleClass",
+    'sap/ui/core/Fragment',
 	"sap/ui/base/ManagedObject",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
 	"sap/ui/integration/library"
 ], function(
+    FilterOperator,
+    Filter,
+    syncStyleClass,
+    Fragment,
 	ManagedObject,
     JSONModel,
     MessageToast,
@@ -35,8 +43,8 @@ sap.ui.define([
             let v_tallamAyorA = Number(i_tme) + Number((2*v_rest));
             this._oView.byId("table_biometria").destroyColumns();
 
-            this.setColumnDinamic("CodEspecie","");
-            this.setColumnDinamic("Especie","");
+            this.setColumnDinamic("Cod. Especie","","CodEspecie");
+            this.setColumnDinamic("Especie","","Especie");
 
             var d1 = Number(i_tme);
             var d2 = Number(v_tallamAyorA);
@@ -53,29 +61,34 @@ sap.ui.define([
                 }
             }
 
-            this.setColumnDinamic("Moda","");
-            this.setColumnDinamic("Muestra","");
-            this.setColumnDinamic("Porc. Juveniles","");
+            this.setColumnDinamic("Moda","","Moda");
+            this.setColumnDinamic("Muestra","","Muestra");
+            this.setColumnDinamic("Porc. Juveniles","","PorcJuveniles");
+
+            //this._oView.getModel("eventos").updateBindings(true);
 
         },
 
         getTableDefault:function(){
 
-            this.setColumnDinamic("CodEspecie","");
-            this.setColumnDinamic("Especie","");
-            this.setColumnDinamic("Moda","");
-            this.setColumnDinamic("Muestra","");
-            this.setColumnDinamic("Porc. Juveniles","");
+            this.setColumnDinamic("Cod. Especie","","CodEspecie");
+            this.setColumnDinamic("Especie","","Especie");
+            this.setColumnDinamic("Moda","","Moda");
+            this.setColumnDinamic("Muestra","","Muestra");
+            this.setColumnDinamic("Porc. Juveniles","","PorcJuveniles");
 
         },
-        setColumnDinamic:function(textCol,idCol){
+        setColumnDinamic:function(textCol,idCol,paramModel){
+            let CampoSet = "{eventos>" + paramModel + "}";
             if(idCol != ""){
                 this._oView.byId("table_biometria").addColumn( new sap.ui.table.Column(idCol,{
                     label: new sap.m.Label({
                         text: textCol 
                     }),
-                    template : new sap.m.Text({
-                        text: textCol 
+                    template : new sap.m.Input({
+                        //value: textCol 
+                       // enabled : textCol
+                       // enabled : textCol ===  "CodEspecie"? false: true
                     })
                 }));
             }
@@ -85,7 +98,7 @@ sap.ui.define([
                         text: textCol 
                     }),
                     template : new sap.m.Text({
-                        text: textCol 
+                        text: CampoSet 
                     }),
                     width : '10rem'
                 }));
@@ -94,6 +107,110 @@ sap.ui.define([
 
         getcontrol:function(){
             return this._oControl;
+        },
+
+		handleTableSelectDialogPress: function (oEvent) {
+			var oButton = oEvent.getSource(),
+				oView = this._oView;
+
+			if (!this._pDialog) {
+				this._pDialog = Fragment.load({
+					id: oView.getId(),
+					name: "com.tasa.test.fragments.Popup_especie",
+					controller: this
+				}).then(function(oDialog){
+					oView.addDependent(oDialog);
+					return oDialog;
+				});
+			}
+
+			this._pDialog.then(function(oDialog){
+				this._configDialog(oButton, oDialog);
+				oDialog.open();
+			}.bind(this));
+		},
+
+		_configDialog: function (oButton, oDialog) {
+
+			// Multi-select if required
+			var bMultiSelect = !!oButton.data("multi");
+			oDialog.setMultiSelect(bMultiSelect);
+
+			// toggle compact style
+			syncStyleClass("sapUiSizeCompact", this._oView, oDialog);
+		},
+        handleSearch: function (oEvent) {
+			var sValue = oEvent.getParameter("value");
+            var oFilter = new Filter("descripcion", FilterOperator.Contains, sValue);
+			var oBinding = oEvent.getSource().getBinding("items");
+            console.log(oBinding);
+            oBinding.filter([oFilter]);
+            if(oBinding.aLastContextData.length == 0){
+                var oFilter2 = new Filter("id", FilterOperator.Contains, sValue);
+                oBinding.filter([oFilter2]);
+            }
+		},
+        obtenerEspecies: function(oEvent){
+            this.lst_Biometria = [];
+            self= this;
+            //let oSelectedItem = this._oView.byId("myDialog").getItems(); 
+            var aContexts = oEvent.getParameter("selectedContexts");
+            if (aContexts && aContexts.length) {
+                aContexts.map(function (oContext) 
+                { 
+                    self.lst_Biometria.push({
+                        CodEspecie: oContext.getObject().id,
+                        Especie: oContext.getObject().descripcion
+                     });
+                
+                })
+            }
+            // let oSelectedItem = this._oView.byId("myDialog").getSelectedItems(); 
+            // for (var i = 0; i < oSelectedItem.length; i++) {
+            //     var item1 = oSelectedItem[i];
+            //     var cells = item1.getCells();
+            //     console.log(cells[0].getText());
+            //     console.log(cells[1].getText());
+
+            //     lst_Biometria.push({
+            //         CodEspecie: cells[0].getText(),
+            //         Especie: cells[1].getText()
+            //     });
+                    
+            // }
+            this._oView.getModel("eventos").setProperty("/ListaBiometria", this.lst_Biometria);
+            this._oView.getModel("eventos").updateBindings(true);
+        },
+        deleteItemsBiometria: function(oevent){
+            let tablaBio = this._oView.byId("table_biometria");
+            let ListaBiometrias = this._oView.getModel("eventos").getData().ListaBiometria;
+            let ListadeIndices  = tablaBio.getSelectedIndices();
+            for (var i = 0; i < ListaBiometrias.length; i++) {
+                for (let index = 0; index < ListadeIndices.length; index++) {
+                    if(ListadeIndices[index] == i){
+                        ListaBiometrias.splice(i, 1);
+                    }
+                    
+                }
+                    
+            }
+            /*****************************ELIMINACION DE PESCA DECLARADA************************************** */
+            let ListaPescaDecl = this._oView.getModel("eventos").getData().ListaPescaDeclarada;
+            for (var i = 0; i < ListaPescaDecl.length; i++) {
+                for (let index = 0; index < ListadeIndices.length; index++) {
+                    if(ListadeIndices[index] == i){
+                        ListaPescaDecl.splice(i, 1);
+                    }
+                    
+                }
+                    
+            }
+            this._oView.getModel("eventos").setProperty("/ListaPescaDeclarada",ListaPescaDecl);
+            this._oView.getModel("eventos").setProperty("/ListaBiometria",ListaBiometrias);
+
+
+
         }
+
 	});
 });

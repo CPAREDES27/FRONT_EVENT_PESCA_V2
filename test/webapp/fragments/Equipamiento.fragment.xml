@@ -2,7 +2,15 @@
 
 	<Panel id="0011" expandable="false">
 		<content>
-			<Table width="auto" noDataText="No data" mode="None" showSeparators="All" growing="true" growingThreshold="20" growingScrollToLoad="true" class="sapUiResponsiveMargin">
+			<Table width="auto" 
+			noDataText="No data" 
+			mode="None" 
+			items="{eventos>/ListaEquipamiento}"
+			showSeparators="All" 
+			growing="true" 
+			growingThreshold="20" 
+			growingScrollToLoad="true" 
+			class="sapUiResponsiveMargin">
 				<infoToolbar>
 					<Toolbar width="100%" height="auto" design="Auto" visible="false" enabled="true">
 						<content>
@@ -41,26 +49,10 @@
 				<items>
 					<ColumnListItem type="Inactive">
 						<cells>
-							<Text text="Euipamiento1" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="Descripcion 1" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="UM" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Input value="100" type="Text" showValueHelp="false" enabled="true" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
-						</cells>
-					</ColumnListItem>
-					<ColumnListItem type="Inactive">
-						<cells>
-							<Text text="Euipamiento1" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="Descripcion 1" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="UM" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Input value="100" type="Text" showValueHelp="false" enabled="true" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
-						</cells>
-					</ColumnListItem>
-					<ColumnListItem type="Inactive">
-						<cells>
-							<Text text="Euipamiento1" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="Descripcion 1" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Text text="UM" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
-							<Input value="100" type="Text" showValueHelp="false" enabled="true" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
+							<Text text="{eventos>CDEQP}" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
+							<Text text="{eventos>DSEQP}" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
+							<Text text="{eventos>DSUMD}" width="auto" maxLines="1" wrapping="false" textAlign="Begin" textDirection="Inherit" visible="true" />
+							<Input value="{eventos>CNEPE}" type="Text" showValueHelp="false" enabled="{eventos>/enabledCantEquipamiento}" visible="true" width="auto" valueHelpOnly="false" required="false" valueStateText="Invalid entry" maxLength="0" />
 						</cells>
 					</ColumnListItem>
 				</items>

@@ -91,6 +91,27 @@ sap.ui.define([
                 nroEvento: ""
             };
             return sBody;
+        },
+        getElimPescaDesc: function(){
+            var sBody = {
+                i_table: "",
+                p_user: "FGARCIA",
+                t_data: ""
+            };
+            return sBody;
+        },
+        getActuaPescaDesc: function(){
+            var sBody = {
+                p_user: "FGARCIA",
+                str_set: []
+            };
+            return sBody;
+        },
+        getAnularDescRFC: function(){
+            var sBody = {
+                p_nrdes: ""
+            };
+            return sBody;
         }
 
 

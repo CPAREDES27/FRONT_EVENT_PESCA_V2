@@ -1,24 +1,44 @@
 sap.ui.define([
+    "../service/TasaBackendService",
+    'sap/ui/model/FilterOperator',
+    'sap/ui/model/Filter',
+    "sap/ui/core/syncStyleClass",
+    'sap/ui/core/Fragment',
     "sap/ui/base/ManagedObject",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
-    "sap/ui/integration/library"
+    "sap/ui/integration/library",
+    "../model/textValidaciones",
+    "sap/m/MessageBox"
 ], function (
+    TasaBackendService,
+    FilterOperator,
+    Filter,
+    syncStyleClass,
+    Fragment,
     ManagedObject,
     JSONModel,
     MessageToast,
-    integrationLibrary
+    integrationLibrary,
+    textValidaciones,
+    MessageBox
 ) {
     "use strict";
 
     return ManagedObject.extend("com.tasa.test.controller.PescaDescargada", {
 
-        constructor: function (oView, sFragName) {
+        constructor: function (oView, sFragName,o_this) {
 
             this._oView = oView;
             this._oControl = sap.ui.xmlfragment(oView.getId(), "com.tasa.test.fragments." + sFragName, this);
             this._bInit = false;
+            this._DataPopup;
+            this._controler = o_this;
+            this._modelosPescaDescargada = {"ListaDescargas":[]}
 
+            var Popup_Descarga_Modelo = new JSONModel();
+            this._oView.setModel(Popup_Descarga_Modelo, "popup_descarga");
+            Popup_Descarga_Modelo.setData(this._modelosPescaDescargada);
 
         },
         onButtonPress3: function (o_event) {
@@ -103,13 +123,13 @@ sap.ui.define([
             return bOk;
         },
 
-        eliminarPescaDeclarada: function(){
+        eliminarPescaDeclarada: function () {
             var eventoActual = {};
             var pescaDeclarada = eventoActual.PescaDeclarada;
             var ePescaDeclarada = eventoActual.ePescaDeclarada;
             for (let index = 0; index < pescaDeclarada.length; index++) {
                 const element = pescaDeclarada[index];
-                if(element.indicador == "E"){
+                if (element.indicador == "E") {
                     var ePescaDeclarada = {
                         Especie: element.Especie
                     };
@@ -121,26 +141,26 @@ sap.ui.define([
         },
 
 
-        validarDatosEvento: function(){
+        validarDatosEvento: function () {
             var soloLectura = DataSession.SoloLectura;//modelo data session
             var tieneErrores = DetalleMarea.TieneErrores;//modelo detalle marea
             var eventoActual = {};//modelo evento actual
             var visible = {};//modelo visible
             var motivoEnCalend = ["1", "2", "8"];//motivos de marea con registros en calendario
-            if(!soloLectura && !tieneErrores){
+            if (!soloLectura && !tieneErrores) {
                 var tipoEvento = eventoActual.TipoEvento;
                 var indEvento = eventoActual.Indicador;
                 var motMarea = eventoActual.MotMarea;
                 var bOk = true;//llamar metodo wdThis.validarCamposGeneral(true)
-                if(bOk && visible.TabHorometro){
+                if (bOk && visible.TabHorometro) {
                     bOk = true;//llamar metodo wdThis.validarLecturaHorometros(true);
-                    if(bOk){
+                    if (bOk) {
                         bOk = true;//llamar wdThis.validarHorometrosEvento();
                     }
                 }
 
-                
-                if(bOk && tipoEvento == "6" && motivoEnCalend.includes(motMarea)){
+
+                if (bOk && tipoEvento == "6" && motivoEnCalend.includes(motMarea)) {
                     visible.VisibleDescarga = false;
                     visible.FechFin = false;
                     var fechIni = eventoActual.FechIni;
@@ -148,20 +168,20 @@ sap.ui.define([
                     //refrescar modelo visible
                 }
 
-                if(bOk && tipoEvento == "3"){
+                if (bOk && tipoEvento == "3") {
                     visible.Descarga = true;
                     bOk = true; //llamar metodo wdThis.validarPescaDeclarada(true);
-                    if(bOk && motMarea == "1"){
+                    if (bOk && motMarea == "1") {
                         //llamar metodo wdThis.calcularCantTotalBodegaEve();
                         bOk = true;//llamar metodo wdThis.validarBodegas(true);
-                        
+
                     }
                 }
             }
             return bOk;
         },
 
-        validarPescaDescargada: function(){
+        validarPescaDescargada: function () {
             var bOk = true;
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             var valorAtributo = null;
@@ -174,22 +194,22 @@ sap.ui.define([
             var centEmba = DetalleMarea.CenEmbarcacion;
             var atributos = ["CantPescaDescargada", "CantPescaDeclarada"];
             var mensaje = "";
-            if(indPropPlanta == "T"){
-                if(PescaDescargada.Especie == "0000000000"){
+            if (indPropPlanta == "T") {
+                if (PescaDescargada.Especie == "0000000000") {
                     mensaje = this.oBundle.getText("SELECCESPECIE");
                     MessageBox.error(mensaje);
                     bOk = false;
                 }
-                if(PescaDescargada.Indicador == "N"){
+                if (PescaDescargada.Indicador == "N") {
                     PescaDescargada.NroDescarga = tipoDescarga + centEmba;
                     //Refrescar modelo
                 }
                 PescaDescargada.FechContabilizacion = eventoActual.FechProduccion;
                 PescaDescargada.Planta = eventoActual.Planta;
-            }else if(indPropPlanta == "P"){
-                if(motMarea == "1"){
+            } else if (indPropPlanta == "P") {
+                if (motMarea == "1") {
                     atributos = ["CantPescaDeclarada"];
-                }else{
+                } else {
                     atributos = ["CantPescaDeclarada", "PuntDescarga", "FechContabilizacion"];
                 }
                 eventoActual.FechProduccion = PescaDescargada.FechContabilizacion;
@@ -202,33 +222,455 @@ sap.ui.define([
                 }
             }
 
-            if(atributos){
+            if (atributos) {
                 var actualPescaDescargada = {}//actual pesca descargada
                 for (let index = 0; index < atributos.length; index++) {
                     const element = atributos[index];
                     var valor = actualPescaDescargada[element];
-                    if(!valor){
+                    if (!valor) {
                         bOk = false;
                         mensaje = this.oBundle.getText("MISSINGFIELD", [element]);
                         //agregar mensaje al modelo de message popover
                     }
-                    
+
                 }
             }
 
-            if(bOk){
-                if(indPropPlanta == "T"){
+            if (bOk) {
+                if (indPropPlanta == "T") {
                     PescaDescargada.CantPescaModificada = PescaDescargada.CantPescaDescargada;
                     //refrescar modelo
                 }
-                if(PescaDescargada.CantPescaDeclarada < 0){
+                if (PescaDescargada.CantPescaDeclarada < 0) {
                     bOk = false;
                 }
-                
+
             }
 
             return bOk;
+        },
+
+        buscarDescarga: function (oEvent) {
+            
+            this.getDialogConsultaDescarga().open();
+        },
+        getDialogConsultaDescarga: function () {
+
+            if (!this.oDialog_consultaDesc) {
+
+                this.oDialog_consultaDesc = sap.ui.xmlfragment("com.tasa.test.fragments.Popup_buscarDescarga", this);
+
+                this._oView.addDependent(this.oDialog_consultaDesc);
+
+            }
+
+            return this.oDialog_consultaDesc;
+
+        },
+
+        cerrarPopUpDescarga: function (oEvent) {
+            this._oView.getModel("popup_descarga").setProperty("/ListaDescargas", []);
+            this.getDialogConsultaDescarga().close();
+        },
+
+        consultarDescarga: async function (oEvent) {
+            let options = [];
+            let comandos = [];
+            let option = [];
+            let nro_descarga = sap.ui.getCore().byId("pbd_nro_descarga").getValue();
+            let cod_embarcacion = sap.ui.getCore().byId("pbd_cod_embarcacion").getValue();
+            let matricula = sap.ui.getCore().byId("pbd_matricula").getValue();
+            let nom_embarcacion = sap.ui.getCore().byId("pbd_nom_embarcacion").getValue();
+            let cod_planta = sap.ui.getCore().byId("pbd_cod_planta").getValue();
+            let nom_planta = sap.ui.getCore().byId("pbd_nom_planta").getValue();
+            let fecha_inicio = sap.ui.getCore().byId("pbd_fecha_inicio").getValue();
+            let tipo_Pesca = sap.ui.getCore().byId("pbd_tipo_pesca").getSelectedKey();
+            let estado = sap.ui.getCore().byId("pbd_estado").getSelectedKey();
+
+            console.log("dato recuperado : " + nro_descarga + " - " + cod_embarcacion + " - " + matricula + " - " + nom_embarcacion + " - "
+            + cod_planta + " - " + nom_planta + " - " + fecha_inicio + " - " + tipo_Pesca + " - " + estado);
+
+            if(tipo_Pesca){
+                options.push({
+                    cantidad: "1",
+                    control:"COMBOBOX",
+                    key:"CDTPC",
+                    valueHigh: "",
+                    valueLow:tipo_Pesca
+                });
+          
+            }
+            if(estado){
+                options.push({
+                    cantidad: "1",
+                    control:"COMBOBOX",
+                    key:"ESDES",
+                    valueHigh: "",
+                    valueLow:estado
+                });
+          
+            }
+            if(nro_descarga){
+                options.push({
+                    cantidad: "10",
+                    control:"INPUT",
+                    key:"NRDES",
+                    valueHigh: "",
+                    valueLow:nro_descarga
+                });
+          
+            }
+            if(cod_embarcacion){
+                options.push({
+                    cantidad: "10",
+                    control:"INPUT",
+                    key:"CDEMB",
+                    valueHigh: "",
+                    valueLow:cod_embarcacion
+                });
+          
+            }
+            if(matricula){
+                options.push({
+                    cantidad: "12",
+                    control:"INPUT",
+                    key:"MREMB",
+                    valueHigh: "",
+                    valueLow:matricula
+                });
+          
+            }
+            if(nom_embarcacion){
+                options.push({
+                    cantidad: "60",
+                    control:"INPUT",
+                    key:"NMEMB",
+                    valueHigh: "",
+                    valueLow:nom_embarcacion
+                });
+          
+            }
+            if(cod_planta){
+                options.push({
+                    cantidad: "4",
+                    control:"INPUT",
+                    key:"CDPTA",
+                    valueHigh: "",
+                    valueLow:cod_planta
+                });
+          
+            }
+            if(nom_planta){
+                options.push({
+                    cantidad: "60",
+                    control:"INPUT",
+                    key:"DSPTA",
+                    valueHigh: "",
+                    valueLow:nom_planta
+                });
+          
+            }
+            if(fecha_inicio){
+                options.push({
+                    cantidad: "8",
+                    control:"INPUT",
+                    key:"FIDES",
+                    valueHigh: "",
+                    valueLow:fecha_inicio
+                });
+          
+            }
+            console.log(this._controler._nroEvento);
+            let s = await  this.cargar_servicios_pescaDesc(options);
+            this._oView.getModel("popup_descarga").setProperty("/ListaDescargas", JSON.parse(this._DataPopup[0]).data);
+            this._oView.getModel("popup_descarga").updateBindings(true);
+
+
+        },
+        consultarDescargaCHD: async function (oEvent) {
+            let options = [];
+            let comandos = [];
+            let matricula = sap.ui.getCore().byId("pbdCHD_matricula").getValue();
+            let nom_embarcacion = sap.ui.getCore().byId("pbdCHD_nom_embarcacion").getValue();
+            let cod_planta = sap.ui.getCore().byId("pbdCHD_cod_planta").getValue();
+            let nom_planta = sap.ui.getCore().byId("pbdCHD_nom_planta").getValue();
+            let fecha_inicio = sap.ui.getCore().byId("pbdCHD_fecha_inicio").getValue();
+
+            console.log("dato recuperado : " + matricula + " - " + nom_embarcacion + " - "
+            + cod_planta + " - " + nom_planta + " - " + fecha_inicio);
+
+            if(matricula){
+                options.push({
+                    cantidad: "12",
+                    control:"INPUT",
+                    key:"MREMB",
+                    valueHigh: "",
+                    valueLow:matricula
+                });
+          
+            }
+            if(nom_embarcacion){
+                options.push({
+                    cantidad: "60",
+                    control:"INPUT",
+                    key:"NMEMB",
+                    valueHigh: "",
+                    valueLow:nom_embarcacion
+                });
+          
+            }
+            if(cod_planta){
+                options.push({
+                    cantidad: "4",
+                    control:"INPUT",
+                    key:"CDPTA",
+                    valueHigh: "",
+                    valueLow:cod_planta
+                });
+          
+            }
+            if(nom_planta){
+                options.push({
+                    cantidad: "60",
+                    control:"INPUT",
+                    key:"DSPTA",
+                    valueHigh: "",
+                    valueLow:nom_planta
+                });
+          
+            }
+            if(fecha_inicio){
+                options.push({
+                    cantidad: "8",
+                    control:"INPUT",
+                    key:"FIDES",
+                    valueHigh: "",
+                    valueLow:fecha_inicio
+                });
+          
+            }
+            console.log(this._controler._nroEvento);
+            let s = await  this.cargar_servicios_pescaDescCHD(options);
+            this._oView.getModel("popup_descarga").setProperty("/ListaDescargas", JSON.parse(this._DataPopup[0]).data);
+            this._oView.getModel("popup_descarga").updateBindings(true);
+
+
+        },
+
+        cargar_servicios_pescaDesc :function (options){
+            let self = this;
+            var s1 = TasaBackendService.obtenerListaDescargaPopUp(options);
+            return Promise.all([s1]).then(values => {
+                self._DataPopup = values;
+                console.log(self._DataPopup);
+                return true;
+            }).catch(reason => {
+                return false;
+            })
+
+        },
+
+        cargar_servicios_pescaDescCHD :function (options){
+            let self = this;
+            var s1 = TasaBackendService.obtenerListaDescargaCHDPopUp(options);
+            return Promise.all([s1]).then(values => {
+                self._DataPopup = values;
+                console.log(self._DataPopup);
+                return true;
+            }).catch(reason => {
+                return false;
+            })
+
+        },
+        obtenerItem :function (event){
+            let mod = event.getSource().getBindingContext("popup_descarga");
+            let data  =mod.getObject();
+            let ListaPescDesc = this._oView.getModel("eventos").getData().ListaPescaDescargada[0];
+            ListaPescDesc.Nro_descarga = data.NRDES;
+            ListaPescDesc.TICKE = data.TICKE;
+            ListaPescDesc.CDSPC = data.CDSPC;
+            ListaPescDesc.DSSPC = data.DSSPC;
+            ListaPescDesc.CNPDS = data.CNPDS;
+            this._oView.getModel("eventos").updateBindings(true);
+            this.getDialogConsultaDescarga().close();
+            //console.log("Holaaaaaaaaaaaaaa");
+        },
+        eliminarDesacarga: function(event){
+            let mod = event.getSource().getBindingContext("eventos");
+            let data  =mod.getObject();
+            let desc = data.Nro_descarga;
+            let self = this;
+
+            let ListaPescaDescElim = this._oView.getModel("eventos").getData().ListaPescaDescargada;
+            let atrb_nuevoDes = ListaPescaDescElim[0].EsNuevo ? true : false;
+
+            if(atrb_nuevoDes && ListaPescaDescElim[0].EsNuevo == true){ // se setea nuevo a la hora de creacion
+                for (var i = 0; i < ListaPescaDescElim.length; i++) {
+                    if(ListaPescaDescElim[i].Nro_descarga == desc){
+                        ListaPescaDescElim.splice(i, 1);
+                    }
+                        
+                }
+                ListaPescaDescElim[0].EsNuevo = true;
+                ListaPescaDescElim[0].Indicador = "N";
+                ListaPescaDescElim[0].CNPCM = textValidaciones.CantPescaDeclaRestante;
+                if (this._controler._motivoMarea == "1") {
+					ListaPescaDescElim[0].CDTPC = "D";
+				} else if (this._controler._motivoMarea =="2") {
+					ListaPescaDescElim[0].CDTPC = "I";
+				}
+
+                if (this._controler._indicadorPropXPlanta == "T") { //Descarga en planta tercera
+					ListaPescaDescElim[0].CDSPC = "0000000000";
+					ListaPescaDescElim[0].Nro_descarga = this._controler._nroDescarga + "T";
+                    ListaPescaDescElim[0].FECCONMOV  = this._oView.byId("dtf_FechaProduccion").getValue(); //Obtengo el valor de fecha de contabilizacion
+					ListaPescaDescElim[0].CDPTA = this._controler._codPlanta; //Obtengo la planta del evento
+				} else if (this._controler._indicadorPropXPlanta == "P") { //Descarga en planta propia
+                    this._oView.byId("pdt_col_BuscarDesc").setVisible(true);
+                    this._oView.byId("pdt_col_EliminarDesc").setVisible(false);
+
+                        ListaPescaDescElim[0].Indicador = "E";
+						ListaPescaDescElim[0].IndEjecucion = "C";
+				}
+
+                this._oView.getModel("eventos").setProperty("/ListaPescaDescargada",ListaPescaDescElim);
+
+            }else{
+                let sResponsivePaddingClasses = "sapUiResponsivePadding--header sapUiResponsivePadding--content sapUiResponsivePadding--footer";
+                if (this._controler._indicadorPropXPlanta == "T") {
+					MessageBox.show(
+                        '¿Realmente desea eliminar el registro de pesca descargada?',
+                        {
+                            icon: MessageBox.Icon.WARNING,
+                            title: "Eliminar pesca descargada",
+                            actions: [MessageBox.Action.OK, MessageBox.Action.NO],
+                            emphasizedAction: MessageBox.Action.OK,
+                            styleClass: "sapUiSizeCompact",
+                            onClose: function (sAction) {
+                                if(sAction == "OK"){
+                                    self.eliminarPescaDescargada();
+                                }
+                            }
+                        }
+                    );
+				} else if (this._controler._indicadorPropXPlanta =="P") { //Descarga en planta propia
+					if (this._controler._motivoMarea == "1") {
+						MessageBox.show(
+                            '¿Realmente desea eliminar el registro de pesca descargada?',
+                            {
+                                icon: MessageBox.Icon.WARNING,
+                                title: "Eliminar pesca descargada",
+                                actions: [MessageBox.Action.OK, MessageBox.Action.NO],
+                                emphasizedAction: MessageBox.Action.OK,
+                                styleClass: sResponsivePaddingClasses,
+                                onClose: function (sAction) {
+                                    if(sAction == "OK"){
+                                        self.eliminarPescaDescargada();
+                                    }
+                                }
+                            }
+                        );
+					} else if (this._controler._motivoMarea == "2") {
+						MessageBox.show(
+                            '¿Realmente desea eliminar el registro de pesca descargada?,\n este proceso es irreversible y puede durar varios minutos.',
+                            {
+                                icon: MessageBox.Icon.WARNING,
+                                title: "Eliminar pesca descargada",
+                                actions: [MessageBox.Action.OK, MessageBox.Action.NO],
+                                emphasizedAction: MessageBox.Action.OK,
+                                styleClass: sResponsivePaddingClasses,
+                                onClose: function (sAction) {
+                                    if(sAction == "OK"){
+                                        self.eliminarPescaDescargada();
+                                    }
+                                }
+                            }
+                        );
+					}
+				}
+                
+                
+            }
+
+            
+        },
+        eliminarPescaDescargada : async function(){
+            let bOk = true;
+            let ListaPescaDescElim = [];
+
+            if (this._controler._indicadorPropXPlanta =="P" && this._controler._motivoMarea == "2") {
+                bOk = await this.anularEventoDescarga(this._controler._nroDescarga, false);
+            }
+            if (bOk) {
+                if (this._controler._indicadorPropXPlanta =="T" || this._controler._indicadorProp == "T") {
+                    // precioMareaElim.setEspecie(pescaDescargadaElement.getEspecie());  --- Revisar mas a fondo si es necesario.
+                    // wdContext.nodePreciosMareaEliminados().addElement(
+                    //     precioMareaElim);
+                }
+                ListaPescaDescElim[0].Indicador = "N";
+                ListaPescaDescElim[0].EsNuevo = true;
+                ListaPescaDescElim[0].CNPCM = textValidaciones.CantPescaDeclaRestante;
+                if (this._controler._motivoMarea == "1") {
+					ListaPescaDescElim[0].CDTPC = "D";
+				} else if (this._controler._motivoMarea =="2") {
+					ListaPescaDescElim[0].CDTPC = "I";
+				}
+
+                if (this._controler._indicadorPropXPlanta == "T") { //Descarga en planta tercera
+					ListaPescaDescElim[0].CDSPC = "0000000000";
+					ListaPescaDescElim[0].Nro_descarga = this._controler._nroDescarga + "T";
+                    ListaPescaDescElim[0].FECCONMOV  = this._oView.byId("dtf_FechaProduccion").getValue(); //Obtengo el valor de fecha de contabilizacion
+					ListaPescaDescElim[0].CDPTA = this._controler._codPlanta; //Obtengo la planta del evento
+				} else if (this._controler._indicadorPropXPlanta == "P") { //Descarga en planta propia
+                    this._oView.byId("pdt_col_BuscarDesc").setVisible(true);
+                    this._oView.byId("pdt_col_EliminarDesc").setVisible(false);
+
+                        ListaPescaDescElim[0].Indicador = "E";
+						ListaPescaDescElim[0].IndEjecucion = "C";
+				}
+
+                this._oView.getModel("eventos").setProperty("/ListaPescaDescargada",ListaPescaDescElim);
+            }
+
+            //MessageToast.show("hOLA METODO");
+
+        },
+        anularEventoDescarga : async function(nroDescarga, anularEvento){
+            let bOk = await this.anularDescargaRFC(nroDescarga);
+            
+            if (!bOk) {
+                MessageBox.error("Lo sentimos hubo un error al eliminar la descarga");
+            } else {
+                if (anularEvento) {
+                    //ELIMINAR DE TABLA EVENTO
+                    let elimDesc =  await TasaBackendService.eliminarPescaDescargada(this._controler._nroMarea, this._controler._nroEvento);
+                    let consulta  = await Promise.all([elimDesc]).then(values => {
+                        return true; }).catch(reason => { return false; })
+
+                } else {
+                    //METODO ACTUALIZAR TABLA
+                    let ActualizDesc =  await TasaBackendService.actualizarPescaDescargada(this._controler._nroMarea, this._controler._nroEvento);
+                    let consulta     =  await Promise.all([ActualizDesc]).then(values => {
+                        return true; }).catch(reason => { return false; })
+                    
+                }
+            }
+            return bOk;
+        },
+        anularDescargaRFC : async function(nroDescarga){
+            let anularDesc =  await TasaBackendService.anularDescargaRFC(nroDescarga);
+            let consulta  = await Promise.all([anularDesc]).then(values => {
+                        if(values.mensaje == "E"){
+                            return false;
+                        }else{
+                            return true;
+                        }
+                         
+                    }).catch(reason => { return false; })
+            return consulta;
+
         }
+
 
 
     });

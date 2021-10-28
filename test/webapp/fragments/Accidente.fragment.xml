@@ -2,7 +2,7 @@
 
 	<m:Panel id="0013" expandable="false">
 		<m:content>
-			<Table id="table_Accidente" selectionMode="MultiToggle" rows="{/ProductCollection}" visibleRowCount="7" enableCellFilter="{ui>/cellFilterOn}" ariaLabelledBy="title">
+			<Table id="table_Accidente" selectionMode="MultiToggle" rows="{eventos>/ListaAccidente}" visibleRowCount="7" enableCellFilter="{ui>/cellFilterOn}" ariaLabelledBy="title">
 				<extension>
 					<m:OverflowToolbar style="Clear">
 						<m:Title id="title_acc" text="Lista de accidentes: " />
