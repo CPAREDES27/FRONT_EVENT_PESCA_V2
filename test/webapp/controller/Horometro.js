@@ -109,6 +109,7 @@ sap.ui.define([
         },
 
         onActionVerMotiLimitacion: function(){
+            console.log("onActionVerMotiLimitacion");
             var eventoActual = {};
             var estOper = eventoActual.EstaOperacion;
             var visible = {};//nodo visible

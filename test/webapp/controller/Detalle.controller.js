@@ -504,7 +504,7 @@ sap.ui.define([
                     this.getView().byId("FechaEnvaseIni").setVisible(false);
                     this.getView().byId("FechaEnvaseFin").setVisible(false);
 
-                    this.getView().byId("fe_estadoOperacion").setVisible(false);
+                    this.getView().byId("fe_estadoOperacion").setVisible(false);//cambiar a false
                     this.getView().byId("fe_tipoDescarga").setVisible(true);
 
                     if (this._indicadorProp == textValidaciones.INDIC_PROPIEDAD_TERCEROS || this._indicadorPropXPlanta == textValidaciones.INDIC_PROPIEDAD_PROPIOS) {
@@ -613,7 +613,7 @@ sap.ui.define([
                 }
 
                 if (!nuevoEvento) {
-                    this.getView().byId("pdt_col_EliminarDesc").setVisible(true); //cambiar a false
+                    this.getView().byId("pdt_col_EliminarDesc").setVisible(false); //cambiar a false
                     this.getView().byId("pde_col_EliminarDesc").setVisible(false);
                     this.getView().byId("pdCHD_col_EliminarDesc").setVisible(false);
                     this.getView().getModel("eventos").setProperty("/enabledFechProdDesc", false);
@@ -866,7 +866,7 @@ sap.ui.define([
             this.getView().byId("dtf_FechaProduccion").setEnabled(false);
             this.getView().byId("dtp_fechaFinCala").setEnabled(false);
             this.getView().byId("dtf_fechaFinEnv").setEnabled(false);
-            this.getView().byId("cmb_estaOperacion").setEnabled(false);
+            this.getView().byId("cmb_estaOperacion").setEnabled(false);//cambiar a false
             this.getView().byId("cb_tipoDescarga").setEnabled(false);
             this.getView().byId("i_temperaturaMar").setEnabled(false);
             this.getView().byId("i_stockCombustible").setEnabled(false);
@@ -892,7 +892,7 @@ sap.ui.define([
             this.getView().byId("dtf_FechaProduccion").setEnabled(false);
             this.getView().byId("dtp_fechaFinCala").setEnabled(false);
             this.getView().byId("dtf_fechaFinEnv").setEnabled(false);
-            this.getView().byId("cmb_estaOperacion").setEnabled(false);
+            this.getView().byId("cmb_estaOperacion").setEnabled(false);//cambiar a false
             this.getView().byId("cb_tipoDescarga").setEnabled(false);
             this.getView().byId("i_temperaturaMar").setEnabled(false);
             this.getView().byId("i_stockCombustible").setEnabled(false);

@@ -12,7 +12,7 @@
 									<Label text="Estado de operación:" design="Standard" width="100%" required="false" textAlign="Begin" textDirection="Inherit" visible="true"/>
 								</form:label>
 								<form:fields>
-									<ComboBox id="cmb_estaOperacion" items="{combEstadoOperacion>/data}" placeholder="Estado de operación" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%">
+									<ComboBox id="cmb_estaOperacion" items="{combEstadoOperacion>/data}" placeholder="Estado de operación" editable="true" enabled="true" visible="true" width="50%" valueState="None" maxWidth="100%" change=".map_onActionVerMotiLimitacion">
 										<items>
 											<core:Item key="{combEstadoOperacion>id}" text="{combEstadoOperacion>descripcion}" />
 										</items>

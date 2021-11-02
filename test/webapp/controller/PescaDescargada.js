@@ -108,6 +108,7 @@ sap.ui.define([
                                 type: ButtonType.Emphasized,
                                 text: "Submit",
                                 press: function () {
+                                    this.eliminarPescaDeclarada();
                                     MessageToast.show("Submit pressed!");
                                     this.oApproveDialog.close();
                                 }.bind(this)

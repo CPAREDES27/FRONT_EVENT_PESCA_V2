@@ -394,7 +394,11 @@ sap.ui.define([
                 MessageBox.error(mssg);
             }
             return bOk;
+        },
+        map_onActionVerMotiLimitacion:function(event){
+            Horometro.onActionVerMotiLimitacion();
         }
+
 
         
 
