@@ -9,8 +9,8 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/ui/integration/library",
     "../model/textValidaciones",
-    "./General",
     "sap/m/MessageBox",
+    "./General",
     "./Horometro",
     "./PescaDeclarada",
     "./Siniestro"
