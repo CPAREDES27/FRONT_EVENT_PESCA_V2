@@ -13,12 +13,12 @@ sap.ui.define([
 
 	return ManagedObject.extend("com.tasa.test.controller.Siniestro", {
 
-        constructor: function(oView,sFragName) {
+        constructor: function(oView,sFragName,o_this) {
 
             this._oView = oView;
             this._oControl = sap.ui.xmlfragment(oView.getId(), "com.tasa.test.fragments."+ sFragName,this);
             this._bInit = false;
-
+            this.ctr = o_this;
 
         },
         onButtonPress3:function(o_event){
@@ -31,8 +31,8 @@ sap.ui.define([
 
         validarSiniestros: function(){
             var bOk = true;
-            var eventoActual = {}; //nodo evento actual
-            var siniestros = eventoActual.Siniestros;
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct]; //nodo evento actual
+            var siniestros = eventoActual.ListaSiniestros;
             if(siniestros.length < 1){
                 bOk = false;
             }

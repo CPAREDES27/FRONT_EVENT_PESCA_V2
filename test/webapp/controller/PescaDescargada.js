@@ -60,15 +60,14 @@ sap.ui.define([
         validarBodegas: function () {
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             var bOk = true;
-            var ListaEventos = [];
             var eventoActual = {};
-            var bodegas = eventoActual.Bodegas;
+            var bodegas = this._controler._listaEventos[this._controler._elementAct].ListaBodegas;
             var cantTotal = 0;
             var mensaje = "";
             for (let index = 0; index < bodegas.length; index++) {
                 const element = bodegas[index];
                 var cantPesca = element.CantPesca;
-                var capaMaxim = element.CapaPesca;
+                var capaMaxim = element.CAPES;
                 if (cantPesca) {
                     cantTotal += cantPesca;
                     if (cantPesca > capaMaxim) {
@@ -94,8 +93,8 @@ sap.ui.define([
         validarBodegaPesca: function (verMensaje) {
             var bOk = true;
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-            var eventoActual = {};
-            var cantPesca = eventoActual.PescaDeclarada;
+            var eventoActual = this._controler._listaEventos[this._controler._elementAct];;
+            var cantPesca = eventoActual.ListaPescaDeclarada.length;
             var cantTotBod = eventoActual.CantTotalPescDecla;
             if ((cantTotBod > 1 && cantPesca == 0) || (cantTotBod == 0 && cantPesca > 0)) {
                 if (cantPesca > 0) {

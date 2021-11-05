@@ -3,6 +3,9 @@ sap.ui.define([], function () {
 	var productItems =
 		{
 			CantPescaDeclaRestante : 0,
+			EspMareaAct: false,
+			FechFinEspera : "",
+			HoraFinEspera : "",
 			INDIC_PROPIEDAD_PROPIOS: "P",
 			INDIC_PROPIEDAD_TERCEROS: "T",
 			TIPOEVENTOCALA: "3",
@@ -70,6 +73,135 @@ sap.ui.define([], function () {
 				{id : "4"}
 			],
 			//////////////////////////////////////////////////////////
+			eventAttTabGeneral: [
+					[
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "ESOPE"},
+						{id : "STCMB"}
+					],
+					[
+						{id : "CDZPC"},
+						{id : "FIEVN"},
+						{id : "HIEVN"}
+					],
+					[
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "FFEVN"},
+						{id : "HFEVN"}
+					],
+					[
+						{id : "CDZPC"},
+						{id : "FIEVN"},
+						{id : "HIEVN"}
+					],
+					[
+						{id : "CDPTO"},
+						{id : "CDPTA"},
+						{id : "CDEMP"},
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "ESOPE"},
+						{id : "STCMB"}
+					],
+					[
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "FFEVN"},
+						{id : "HFEVN"},
+						{id : "FechProduccion"}, //valor no viene de la estructura de modelo
+						{id : "STCMB"}
+					],
+					[
+						{id : "FIEVN"},
+						{id : "HIEVN"}
+					],
+					[
+						{id : "CDZPC"},
+						{id : "FIEVN"},
+						{id : "HIEVN"}
+					],
+					[
+						{id : "CDZPC"},
+						{id : "FIEVN"},
+						{id : "HIEVN"}
+					],
+					[
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "ESOPE"},
+						{id : "CDMLM"}
+					],
+					[
+						{id : "CDPTO"},
+						{id : "CDPTA"},
+						{id : "CDEMP"},
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "ESOPE"},
+						{id : "CDMLM"}
+					],
+					[
+						{id : "CDPTO"},
+						{id : "CDPTA"},
+						{id : "CDEMP"},
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "ESOPE"},
+						{id : "CDMNP"}
+					],
+					[
+						{id : "CDPTO"},
+						{id : "CDPTA"},
+						{id : "CDEMP"},
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "ESOPE"},
+						{id : "CDMLM"},
+						{id : "CDMNP"}
+					],
+					[
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "ESOPE"}
+					],
+					[
+						{id : "CDPTO"},
+						{id : "CDPTA"},
+						{id : "CDEMP"},
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "ESOPE"}
+					],
+					[
+						{id : "STCMB"}
+					],
+					[
+						{id : "STCMB"}
+					],
+					[
+						
+					],
+					[
+						{id : "CDPTO"},
+						{id : "CDPTA"},
+						{id : "CDEMP"},
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "ESOPE"}
+					],
+					[
+						{id : "FIEVN"},
+						{id : "HIEVN"},
+						{id : "STCMB"}
+					],
+					[
+						
+					]
+
+				
+			],
 			eventAttTabGeneral_1 : [
 				{id : "FIEVN"},
 				{id : "HIEVN"},
@@ -194,7 +326,30 @@ sap.ui.define([], function () {
 			],
 			eventAttTabGeneral_21 : [
 				
-			]
+			],
+			EVEVISTABFECHAFIN : [
+				{id : "3"},
+				{id : "6"},
+				{id : "7"}
+			],
+			MOTIVOMARPESCA : [
+				{id : "1"},
+				{id : "2"}
+			],
+			MOTIVOSINZARPE : [
+				{id : "3"},
+				{id : "7"},
+				{id : "8"}
+			],
+			visible : {
+				VisibleDescarga :true,
+				MotiLimitacion :true,
+				MotiNoPesca :true,
+				FechFin: true,
+				Links:true,
+				LinkRemover:true,
+				LinkDescartar:true
+			}
 		}
 
 	return productItems;

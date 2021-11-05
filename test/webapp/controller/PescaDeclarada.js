@@ -15,12 +15,12 @@ sap.ui.define([
 
 	return ManagedObject.extend("com.tasa.test.controller.PescaDeclarada", {
 
-        constructor: function(oView,sFragName) {
+        constructor: function(oView,sFragName,o_this) {
 
             this._oView = oView;
             this._oControl = sap.ui.xmlfragment(oView.getId(), "com.tasa.test.fragments."+ sFragName,this);
             this._bInit = false;
-
+            this.ctr = o_this;
 
         },
         onButtonPress3:function(o_event){
@@ -34,10 +34,9 @@ sap.ui.define([
         validarPescaDeclarada: function(verMensajes){
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             var bOk = true;
-            var motivo = marea.MotMar; //motivo de marea de modelo detalle marea
-            var ListaEventos = [];
-            var eventoActual = {}; //modelo del evento actual
-            var pescaDeclarada = eventoActual.PescaDeclarada;
+            var motivo = this.ctr._motivoMarea; //motivo de marea de modelo detalle marea
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct]; //modelo del evento actual
+            var pescaDeclarada = eventoActual.ListaPescaDeclarada;
             for (let index = 0; index < pescaDeclarada.length; index++) {
                 const element = pescaDeclarada[index];
                 var valorPesca = null;
@@ -47,7 +46,7 @@ sap.ui.define([
                         valorPesca = element.PorcPesca;
                         mensaje = this.oBundle.getText("ALGCANTPESCACERO");
                     }else{
-                        valorPesca = element.CantPesca;
+                        valorPesca = element.CNPCM;
                         mensaje = this.oBundle.getText("ALGPORCPESCACERO"); 
                     }
 
@@ -59,7 +58,7 @@ sap.ui.define([
                     }
 
                     if(bOk && motivo == "1"){
-                        if(element.Moda < 1){
+                        if(element.ZMODA < 1){
                             bOk = false;
                             if(verMensajes){
                                 mensaje = "";//no se encontro en el pool de mensajes ALGVALMODACERO
@@ -81,30 +80,31 @@ sap.ui.define([
         },
 
         calcularPescaDeclarada: function(){
-            var eventoActual = {}; //modelo del evento actual
-            var cantPescaDec = eventoActual.PescaDeclarada.length;
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct]; //modelo del evento actual
+            var cantPescaDec = eventoActual.ListaPescaDeclarada.length;
             var cantTotal = eventoActual.CantTotalPescDecla;
             if(cantTotal > 0 && cantPescaDec > 0){
-                var pescaDecla = eventoActual.PescaDeclarada;
+                var pescaDecla = eventoActual.ListaPescaDeclarada;
                 for (let index = 0; index < pescaDecla.length; index++) {
                     const element = pescaDecla[index];
-                    var porcPesca = element.porcPesca;
-                    pescaDecla.Editado = true;
-                    pescaDecla.PorcPesca = porcPesca;
-                    pescaDecla.CantPesca = cantTotal * (porcPesca * 0.01);
+                    var porcPesca = element.PorcPesca;
+                    element.Editado = true;
+                    element.PorcPesca = porcPesca;
+                    element.CantPesca = cantTotal * (porcPesca * 0.01);
                 }
             }
+            this._oView.getModel("eventos").updateBindings(true);
             //refrescar modelo
         },
 
         validarPorcPesca: function(){
             var bOk = true;
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-            var eventoActual = {}; //modelo del evento actual
-            var cantPescaDec = eventoActual.PescaDeclarada.length;
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct]; //modelo del evento actual
+            var cantPescaDec = eventoActual.ListaPescaDeclarada.length;
             var cantTotal = eventoActual.CantTotalPescDecla;
             if(cantTotal > 0 && cantPescaDec > 0){
-                var pescaDeclarada = eventoActual.PescaDeclarada;
+                var pescaDeclarada = eventoActual.ListaPescaDeclarada;
                 var porcTotal = 0;
                 for (let index = 0; index < pescaDeclarada.length; index++) {
                     const element = pescaDeclarada[index];
@@ -128,8 +128,8 @@ sap.ui.define([
         },
 
         calcularCantTotalPescDeclEve: function(){
-            var eventoActual = {}; //modelo del evento actual
-            var pescaDeclarada = eventoActual.PescaDeclarada;
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct]; //modelo del evento actual
+            var pescaDeclarada = eventoActual.ListaPescaDeclarada;
             var cantTotal = 0;
             for (let index = 0; index < pescaDeclarada.length; index++) {
                 const element = pescaDeclarada[index];
@@ -143,10 +143,8 @@ sap.ui.define([
 
         validarCantidadTotalPesca: function(){
             var bOk = true;
-            var eventoActual = {};
-            var detalleMarea = {};//modelo de detalle de marea
-            var indProp = detalleMarea.IndPropiedad;//obtener indicador de propeidad del modelo de marea
-            var cantPermiso = detalleMarea.CapBodegaPermiso;//obtener capacidad de bodega del modelo de marea
+            var detalleMarea = this.ctr._FormMarea;//modelo de detalle de marea
+            var indProp =  this.ctr._indicadorProp;//obtener indicador de propeidad del modelo de marea
             var cantTotal = 0;
 
             if(indProp == "T" && (cantTotal == null || (cantTotal != null))){

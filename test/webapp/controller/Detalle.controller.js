@@ -15,7 +15,8 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/ui/integration/library",
     "sap/ui/core/Fragment",
-    "../service/TasaBackendService"
+    "../service/TasaBackendService",
+    "sap/m/MessageBox"
 ], function (
     Controller,
     General,
@@ -33,7 +34,8 @@ sap.ui.define([
     MessageToast,
     integrationLibrary,
     Fragment,
-    TasaBackendService
+    TasaBackendService,
+    MessageBox
 ) {
     "use strict";
     return Controller.extend("com.tasa.test.controller.Detalle", {
@@ -61,8 +63,8 @@ sap.ui.define([
             this._indicadorPropXPlanta = "P";
             this._soloLectura = false;
             this._EsperaMareaAnt = [{ "id": "0" }, { "id": "1" }];
-            this._listaEventos = [{ "Numero": "1", "id": "0", "TipoEvento": "7", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[] }, { "Numero": "2", "id": "1", "TipoEvento": "2", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[] }];
-            this._FormMarea = { "EstMarea": "C", "EstCierre": "A", "FecCierre": "02/24/2021", "HorCierre": "17:04:50", "ObseAdicional": "Prueba", "CenEmbarcacion": "T059" };
+            this._listaEventos = [{ "Numero": "1", "id": "0", "TipoEvento": "7", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[], "ListaSiniestros": [],"ListaIncidental":[] }, { "Numero": "2", "id": "1", "TipoEvento": "2", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[],"ListaSiniestros": [],"ListaIncidental":[] }];
+            this._FormMarea = {"EsNuevo":true, "EstMarea": "C", "EstCierre": "A", "FecCierre": "02/24/2021", "HorCierre": "17:04:50", "ObseAdicional": "Prueba", "CenEmbarcacion": "T059" };
             this._mareaReabierta = false;
             this._elementAct = "1";
             this._zonaPesca = "0007";
@@ -71,12 +73,12 @@ sap.ui.define([
             this._tipoPreservacion = "";
             this._opSistFrio = false;
             this._listasServicioCargaIni;
-            this._listaEventosBkup
+            this._listaEventosBkup;
+            this._listaMareaAnterior;
             /************ Listas iniciales vacias **************/
             this._ConfiguracionEvento = {};
             this._cmbPuntosDescarga = [];
-            /************ Listas carga de dominios **************/
-            this._ConfiguracionEvento = {};
+            this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 
             /************ Carga de fragments de los eventos **************/
             let self = this;
@@ -109,6 +111,9 @@ sap.ui.define([
             EventosModelo.setProperty("/enabledCantEquipamiento", true);
 
 
+        },
+        obtenerTab :function(event){
+            console.log(event.getParameter("selectedItem").getProperty("text"));
         },
         cargaModelos: function () {
 
@@ -214,18 +219,18 @@ sap.ui.define([
             var o_tabAccidente = this.getView().byId("idAccidente");
             var o_tabBiometria = this.getView().byId("idBiometria");
 
-            var o_fragment = new General(this.getView(), "General");
-            var o_fragment2 = new General(this.getView(), "General_fechas");
-            var o_fragment3 = new General(this.getView(), "General_operacion");
-            var o_fragment4 = new General(this.getView(), "General_espera");
-            var o_fragment5 = new General(this.getView(), "General_adicional");
+            var o_fragment = new General(this.getView(), "General",this);
+            var o_fragment2 = new General(this.getView(), "General_fechas",this);
+            var o_fragment3 = new General(this.getView(), "General_operacion",this);
+            var o_fragment4 = new General(this.getView(), "General_espera",this);
+            var o_fragment5 = new General(this.getView(), "General_adicional",this);
 
             var o_fragment6 = new Distribucion(this.getView(), "Distribucion");
-            var o_fragment7 = new PescaDeclarada(this.getView(), "PescaDeclarada");
+            var o_fragment7 = new PescaDeclarada(this.getView(), "PescaDeclarada",this);
             var o_fragment8 = new PescaDescarga(this.getView(), "PescaDescargada",this);
-            var o_fragment9 = new Horometro(this.getView(), "Horometro");
+            var o_fragment9 = new Horometro(this.getView(), "Horometro",this);
             var o_fragment10 = new Equipamiento(this.getView(), "Equipamiento");
-            var o_fragment11 = new Siniestro(this.getView(), "Siniestro");
+            var o_fragment11 = new Siniestro(this.getView(), "Siniestro",this);
             var o_fragment12 = new Accidente(this.getView(), "Accidente");
             var o_fragment13 = new Biometria(this.getView(), "Biometria", this._utilNroEventoBio);
 
@@ -504,7 +509,7 @@ sap.ui.define([
                     this.getView().byId("FechaEnvaseIni").setVisible(false);
                     this.getView().byId("FechaEnvaseFin").setVisible(false);
 
-                    this.getView().byId("fe_estadoOperacion").setVisible(false);//cambiar a false
+                    this.getView().byId("fe_estadoOperacion").setVisible(true);//cambiar a false
                     this.getView().byId("fe_tipoDescarga").setVisible(true);
 
                     if (this._indicadorProp == textValidaciones.INDIC_PROPIEDAD_TERCEROS || this._indicadorPropXPlanta == textValidaciones.INDIC_PROPIEDAD_PROPIOS) {
@@ -859,6 +864,184 @@ sap.ui.define([
             return cantTotal;
 
         },
+        validarEsperaEventoAnterior: function(){
+            let bOk = true;
+            let elemAnt = Number(this._elementAct) - 1;
+            let limiteMin = Number(this._ConfiguracionEvento.EspeMiliLimMinimo);
+	        let limiteMax = Number(this._ConfiguracionEvento.EspeMiliLimMaximo);
+            let exisEspMarAnt = this._EsperaMareaAnt.length > 0;
+            if(this._ConfiguracionEvento.EspeUMExtValido){
+                if(Number(this._elementAct) > 0){
+                    let fechaIni = this._listaEventos[this._elementAct].FechIni;
+				    let horaIni =  this._listaEventos[this._elementAct].HoraIni;
+
+                    let tipoEventoAnt = this._listaEventos[elemAnt].TipoEvento;
+                    let fechaFin = this._listaEventos[elemAnt].FechIni;
+                    let horaFin = this._listaEventos[elemAnt].HoraIni;
+
+                    if (this.buscarValorFijo(textValidaciones.EVEVISTABFECHAFIN, tipoEventoAnt)) {
+                        fechaFin = this._listaEventos[elemAnt].FechFin;
+                        horaFin = this._listaEventos[elemAnt].HoraFin;	
+                    }	
+                    let fechHoIni = new Date(fechaIni + " " + horaIni);
+                    let miliFecHoIni = fechHoIni.getTime();
+                    let fechHoFin = new Date(fechaFin + " " + horaFin);
+                    let miliFecHoFin = fechHoFin.getTime();
+                    
+                    let tiempo = Number(miliFecHoFin) - Number(miliFecHoIni);
+                    
+                    if (tiempo > limiteMin && tiempo <= limiteMax) {	
+                        bOk = false;
+                         
+                        let mssg = this.oBundle.getText("SUPLIMMINESPERA");
+                        MessageBox.error(mssg);
+                        textValidaciones.EspMareaAct = true;
+                        //wdThis.wdFireEventCrearEventoEspera();
+                    } else if (tiempo > limiteMax) {
+                        bOk = false;
+
+                        let mssg1 = this.oBundle.getText("SUPLIMMINESPERA");
+                        let mssg2 = this.oBundle.getText("TEXTCERRARMARE");
+                        MessageBox.error(mssg1 + " " + mssg2);
+                    }
+                }
+                else if (this._indicadorProp =="P") {
+                    if (!this._FormMarea.EsNuevo) {
+                        // wdThis.wdGetFormCustController().obtenerDatosMareaAnt(wdContext.currentFormElement().getMarea(), 
+                        //     wdContext.currentFormElement().getEmbarcacion());
+                    }
+                                
+                    let motivoMareaAnt = this._listaMareaAnterior.MotMarea;	
+                                    
+                    if (motivoMareaAnt != "" && this.buscarValorFijo(textValidaciones.MOTIVOMARPESCA, motivoMareaAnt)) {
+                        let fechaFin = null;
+                        let horaFin = null;
+                        let fechaIni = null;
+                        let horaIni = null;
+                        let tiempo = 0;
+                        
+                        if (!this.buscarValorFijo(textValidaciones.MOTIVOSINZARPE, motivoMareaAnt)) {		
+                            let tipoEvento = this._listaMareaAnterior.EventosMareaAnt.TipoEvento;
+    
+                            fechaIni = this._listaEventos[this._elementAct].FechIni;
+                            horaIni  = this._listaEventos[this._elementAct].HoraIni;
+                            
+                            if (exisEspMarAnt) {
+                                fechaFin = this._EsperaMareaAnt[0].FechFin;
+                                horaFin  = this._EsperaMareaAnt[0].HoraFin;
+                            } else {
+                                if (this.buscarValorFijo(textValidaciones.EVEVISTABFECHAFIN, tipoEvento)) {
+                                    fechaFin = this._listaMareaAnterior.EventosMareaAnt.FechFin;
+                                    horaFin = this._listaMareaAnterior.EventosMareaAnt.HoraFin;	
+                                } else {
+                                    fechaFin = this._listaMareaAnterior.EventosMareaAnt.FechIni;
+                                    horaFin = this._listaMareaAnterior.EventosMareaAnt.HoraIni;
+                                }
+                            }
+                            let fechHoIni = new Date(fechaIni + " " + horaIni);
+                            let miliFecHoIni = fechHoIni.getTime();
+                            let fechHoFin = new Date(fechaFin + " " + horaFin);
+                            let miliFecHoFin = fechHoFin.getTime();
+                                                
+                            tiempo = Number(miliFecHoFin) - Number(miliFecHoIni);
+                            
+                            textValidaciones.EspMareaAct = true;
+                            
+                            textValidaciones.FechFinEspera = fechaFin;
+                            textValidaciones.HoraFinEspera = horaFin;
+                
+                            if (tiempo > limiteMin && tiempo <= limiteMax) {
+                                bOk = false;
+                                
+                                if (!exisEspMarAnt) {
+                                    //wdThis.wdFireEventCrearEventoEspera();
+                                    let mssg = this.oBundle.getText("SUPLIMMINESPERA");
+                                    MessageBox.error(mssg);
+                                    textValidaciones.EspMareaAct = true;
+                                } else {
+                                    let mssg1 = this.oBundle.getText("SUPLIMMINESPERA");
+                                    let mssg2 = this.oBundle.getText("TEXTCERRARMARE");
+                                    MessageBox.error(mssg1 + " " + mssg2);
+                                }
+                            } else if (tiempo > limiteMax) {
+                                bOk = false;
+                                
+                                let mssg1 = this.oBundle.getText("SUPLIMMINESPERA");
+                                let mssg2 = this.oBundle.getText("TEXTCERRARMARE");
+                                MessageBox.error(mssg1 + " " + mssg2);
+                            } 
+                            
+                            if (!bOk && exisEspMarAnt) {
+                                this._EsperaMareaAnt = [];
+                            }
+                        }
+                    } else {
+                        let mssg = this.oBundle.getText("NOEXISTDATAMARANT");
+                        MessageBox.error(mssg);
+                    }
+                }
+            }
+            return bOk;
+        },
+        validarDatosEspera: function(){
+            let fechaIni = this._listaEventos[this._elementAct].FechIni;
+            let horaIni = this._listaEventos[this._elementAct].HoraIni;
+            let fechaFin = this._listaEventos[this._elementAct].FechFin;
+            let horaFin = this._listaEventos[this._elementAct].HoraFin;
+            let fechHorIni = new Date(fechaIni + " " + horaIni);
+            let fechHorFin = new Date(fechaFin + " " + horaFin);
+            let esperaMin = Number(this._ConfiguracionEvento.EspeMiliLimMinimo);
+            let esperaMax = Number(this._ConfiguracionEvento.EspeMiliLimMaximo);
+            let horaFeI = Number(fechHorIni.getHours())*60*60*60 + Number(fechHorIni.getMinutes())*60*60 + Number(fechHorIni.getSeconds())*60;
+            let fechaMin = new Date(fechHorIni.getTime() + esperaMin);
+            let horaMin = this.msToTime(horaFeI + esperaMin);
+            let fechaMax = new Date(fechHorIni.getTime() + esperaMax);
+            let horaMax = this.msToTime(horaFeI + esperaMax);
+            //________________________________________________________________//
+            let todayDate = new Date().toISOString().slice(0, 10);
+            let fchHoy = "" + todayDate;
+            let fechHorMin = new Date(fchHoy + " " + this.msToTime(horaFeI + esperaMin));
+            let fechHorMax = new Date(fchHoy + " " + this.msToTime(horaFeI + esperaMax));
+            let fechHoraAct = new Date();
+            //contextEvento
+            
+            if (fechHorIni > fechHorFin) {
+                let mssg1 = this.oBundle.getText("FECHAINIEVEMENOFECHAFIN");
+                MessageBox.error(mssg1);
+            } else if (fechHoraAct > fechHorFin) {
+                let mssg1 = this.oBundle.getText("FECHAFINEVEMENOFECHACT");
+                MessageBox.error(mssg1);
+            } else if (fechHorMin > fechHorFin) {		
+                let mssg1 = this.oBundle.getText("FECFINNOMENLIMMIN");
+                MessageBox.error(mssg1 + " " + fechaMin + " " + horaMin);
+                this._listaEventos[this._elementAct].FechFin = fechaMin;
+                this._listaEventos[this._elementAct].HoraFin = horaMin;
+            } else if (fechHorFin.after(fechHorMax)) {
+                let mssg1 = this.oBundle.getText("FECFINNOMAYLIMMAX");
+                MessageBox.error(mssg1 + " " + fechaMax + " " + horaMax);
+                this._listaEventos[this._elementAct].FechFin = fechaMax;
+                this._listaEventos[this._elementAct].HoraFin = horaMax;
+            } else {
+                //bOk = true;
+                return true;
+            }
+            
+            return false;
+
+        },
+        msToTime:function(duration) {
+            var milliseconds = Math.floor((duration % 1000) / 100),
+              seconds = Math.floor((duration / 1000) % 60),
+              minutes = Math.floor((duration / (1000 * 60)) % 60),
+              hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+          
+            hours = (hours < 10) ? "0" + hours : hours;
+            minutes = (minutes < 10) ? "0" + minutes : minutes;
+            seconds = (seconds < 10) ? "0" + seconds : seconds;
+          
+            return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+          },
+
         prepararVistaRevision: function () {
             this.getView().byId("cb_ZonaPesca").setEnabled(false);
             this.getView().byId("dtp_fechaIniCala").setEnabled(false);
@@ -866,7 +1049,7 @@ sap.ui.define([
             this.getView().byId("dtf_FechaProduccion").setEnabled(false);
             this.getView().byId("dtp_fechaFinCala").setEnabled(false);
             this.getView().byId("dtf_fechaFinEnv").setEnabled(false);
-            this.getView().byId("cmb_estaOperacion").setEnabled(false);//cambiar a false
+            this.getView().byId("cmb_estaOperacion").setEnabled(true);//cambiar a false
             this.getView().byId("cb_tipoDescarga").setEnabled(false);
             this.getView().byId("i_temperaturaMar").setEnabled(false);
             this.getView().byId("i_stockCombustible").setEnabled(false);
@@ -884,6 +1067,86 @@ sap.ui.define([
             this.getView().getModel("eventos").setProperty("/enabledBodCantpesca", false);
 
         },
+        //------METODOS ALEJANDRO-------------
+        validarCantPescaDeclDesc : function() {
+            var bOk = true;
+            this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+            var DetalleMarea = {}//modelo detalle de marea
+            var eventoActual = {};//modelo evento actual
+            var indActual = eventoActual.Posicion;
+            var nroEventoTope = eventoActual.Numero;
+            var cantTotalDecl = 0;
+            var cantTotalDeclDesc = 0;
+            for (let index = (indActual + 1); index < DetalleMarea.ListaEventos.length; index++) {
+                const element = array[index];
+                nroEventoTope = element.Numero;
+                if(element.TipoEvento == "1"){
+                    break;
+                }
+            }
+            /*cantTotalDecl = wdThis.wdGetEventoCustController().obtenerCantTotalPescaDecla(
+				nroEventoTope);*/
+            /*cantTotalDeclDesc =
+                wdThis.wdGetEventoCustController().obtenerCantTotalPescaDeclDesc(
+                    nroEventoTope);*/
+            if(cantTotalDecl > cantTotalDeclDesc){
+                var mensaje = this.oBundle.getText("PESCDECDESCMAYPESCDEC");
+                MessageBox.error(mensaje);
+                bOk=false;
+            }
+
+
+            return bOk;
+        },
+
+        validarCambios: function(){
+            var bOk = PescaDescargada.validarDatosEvento();
+            var detalleMarea = {};//modelo detalle marea
+            if(!bOk){
+                Horometro.mostrarEnlaces();
+            }else{
+                detalleMarea.FormEditado = true;
+            }
+            //refresh model
+        },
+
+        validarDatos: function(){
+            var DataSession = {};//modelo data session
+            var soloLectura = DataSession.SoloLectura;
+            var visible = {};//modelo visible
+            var eventoActual = {}; //nodo evento actual
+            var detalleMarea = {};//modelo detalle marea
+            var isRolIngComb = DataSession.IsRolIngComb;
+            if(eventoActual.TipoEvento == "6"){
+                visible.VisibleDescarga = false;
+                visible.FechFin = false;
+            }else{
+                visible.VisibleDescarga = true;
+            }
+
+            //var validarMareaEventos = wdThis.wdGetFormCustController().validarMareaEventos();
+            var validarMareaEventos = true;
+            var validarDatosEvento = PescaDescargada.validarDatosEvento();
+            if(validarMareaEventos){
+                if(validarDatosEvento && !detalleMarea.TieneErrores){
+                    if(isRolIngComb){
+                        visible.VisibleObsvComb = true;              
+                    }else{
+                        visible.VisibleObsvComb = true;
+                    }
+                    this.getDialog().open();
+                }
+            }
+        },
+
+        getDialog: function(){
+            if (!this.oDialog) {
+                this.oDialog = sap.ui.xmlfragment("com.tasa.test.fragments.Confirm", this);
+                this.getView().addDependent(this.oDialog);
+            }
+            return this.oDialog;
+        },
+        //-----------------------------
 
         resetView: function () {
             this.getView().byId("cb_ZonaPesca").setEnabled(false);

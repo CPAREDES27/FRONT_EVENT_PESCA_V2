@@ -16,7 +16,7 @@
 							</ObjectListItem>
 						</layout:content>
 					</layout:VerticalLayout>
-					<IconTabBar expandable="false" expanded="true" applyContentPadding="false" backgroundDesign="Solid" upperCase="false" visible="true" selectedKey="Ok">
+					<IconTabBar select=".obtenerTab"  expandable="false" expanded="true" applyContentPadding="false" backgroundDesign="Solid" upperCase="false" visible="true" selectedKey="Ok">
 						<items>
 							<IconTabFilter id="idGeneral" iconColor="Default" text="General" count="" design="Vertical" showAll="false" textDirection="Inherit" enabled="true" visible="true" iconDensityAware="false">
 

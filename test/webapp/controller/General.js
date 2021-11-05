@@ -7,7 +7,8 @@ sap.ui.define([
     "./Horometro",
     "./PescaDescargada",
     "./PescaDeclarada",
-    "./Siniestro"
+    "./Siniestro",
+    "../model/textValidaciones"
 ], function(
 	ManagedObject,
     JSONModel,
@@ -17,20 +18,22 @@ sap.ui.define([
     Horometro,
     PescaDescargada,
     PescaDeclarada,
-    Siniestro
+    Siniestro,
+    textValidaciones
 ) {
 	"use strict";
 
 	return ManagedObject.extend("com.tasa.test.controller.General", {
 
-        constructor: function(oView,sFragName) {
+        constructor: function(oView,sFragName,o_this) {
 
             this._oView = oView;
             this._oControl = sap.ui.xmlfragment(oView.getId(), "com.tasa.test.fragments."+ sFragName,this);
             this._bInit = false;
-
+            this.ctr = o_this;
             this.previousTab = "";
             this.nextTab = "";
+            console.log(textValidaciones.eventAttTabGeneral);
 
         },
         onButtonPress3:function(o_event){
@@ -94,15 +97,15 @@ sap.ui.define([
 
         validarCamposGeneral: function(bool){
             var bOk = false;
-            var eventoActual = {}; //nodo evento actual
-            var detalleMarea = {};//modelo detalle marea
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct]; //nodo evento actual
+            //var detalleMarea = {};//modelo detalle marea
             var Utils = {};//modelo Utils
             var visible = {};//modelo visible
-            var eventAttTabGeneral = {};//modelo con los atributos de los tab por tipo de evento
-            var motivoMarea = detalleMarea.MotMar;
-            var tipoEvento = eventoActual.TipoEvento;
-            var indPropiedad = detalleMarea.IndPropiedad;
-            var indPropPlanta = eventoActual.IndPropPlanta; //
+            //var eventAttTabGeneral = {};//modelo con los atributos de los tab por tipo de evento
+            var motivoMarea = this.ctr._motivoMarea;
+            var tipoEvento = this.ctr._tipoEvento;
+            var indPropiedad = this.ctr._indicadorProp;
+            var indPropPlanta = this.ctr._indicadorPropXPlanta; //
             var eveCampGeneVal = ["1", "5", "6", "H", "T"]; //Tipos de evento con campos generales distintos a validar 
             if(indPropiedad == "P"){
                 if(Utils.OpSistFrio && parseInt(tipoEvento) < 6){
@@ -114,81 +117,81 @@ sap.ui.define([
                 }
             }
             if(!eveCampGeneVal.includes(tipoEvento)){
-                bOk = this.validateFields(eventAttTabGeneral[tipoEvento],bool);
+                bOk = this.validateFields(textValidaciones.eventAttTabGeneral[Number(tipoEvento)],bool);
                 if(bOk && tipoEvento == "3"){
-                    visible.VisibleDescarga = true;
+                    textValidaciones.visible.VisibleDescarga = true;
                     //bOk =  wdThis.wdGetEventoCustController().validarLatitudLongitud()
                 }
             } else {
                 var estOperacion = eventoActual.EstaOperacion;
-                var eventosValidar = eventAttTabGeneral[tipoEvento];
+                var eventosValidar = textValidaciones.eventAttTabGeneral[Number(tipoEvento)];
                 if(tipoEvento == "1"){
-                    visible.VisibleDescarga = true;
-                    if(visible.MotiLimitacion){
-                        eventosValidar = eventAttTabGeneral["10"];
+                    textValidaciones.visible.VisibleDescarga = true;
+                    if(textValidaciones.visible.MotiLimitacion){
+                        eventosValidar = textValidaciones.eventAttTabGeneral[10];
                     }
                     if(indPropiedad == "T"){
-                        eventosValidar = eventAttTabGeneral["14"];
+                        eventosValidar = textValidaciones.eventAttTabGeneral[14];
                     }
                 } else if(tipoEvento == "5"){
                     visible.VisibleDescarga = true;
-                    var motLimitacion = visible.MotiLimitacion;
-                    var motNoPesca = visible.MotiNoPesca;
+                    var motLimitacion = textValidaciones.visible.MotiLimitacion;
+                    var motNoPesca = textValidaciones.visible.MotiNoPesca;
                     if(indPropiedad == "P"){
                         if(motLimitacion && motNoPesca){
-                            eventosValidar = eventAttTabGeneral["13"];
+                            eventosValidar = textValidaciones.eventAttTabGeneral[13];
                         } else if (motLimitacion){
-                            eventosValidar = eventAttTabGeneral["11"];
+                            eventosValidar = textValidaciones.eventAttTabGeneral[11];
                         } else if (motNoPesca){
-                            eventosValidar = eventAttTabGeneral["12"];
+                            eventosValidar = textValidaciones.eventAttTabGeneral[12];
                         }
                     }else{
-                        eventosValidar = eventAttTabGeneral["15"];
+                        eventosValidar = textValidaciones.eventAttTabGeneral[15];
                     }
                 } else if(tipoEvento == "6"){
-                    visible.VisibleDescarga = false;
-                    visible.FechFin = false;
+                    textValidaciones.visible.VisibleDescarga = false;
+                    textValidaciones.visible.FechFin = false;
                     if(indPropPlanta == "P"){
                         if(indPropiedad == "P"){
                             if(motivoMarea == "1"){
-                                eventosValidar = eventAttTabGeneral["17"];
+                                eventosValidar = textValidaciones.eventAttTabGeneral[17];
                             } else if(motivoMarea == "2"){
-                                eventosValidar = eventAttTabGeneral["16"];
+                                eventosValidar = textValidaciones.eventAttTabGeneral[16];
                             }
                         } else {
                             if(motivoMarea == "1"){
-                                eventosValidar = eventAttTabGeneral["21"];
+                                eventosValidar = textValidaciones.eventAttTabGeneral[21];
                             } else if(motivoMarea == "2"){
-                                eventosValidar = eventAttTabGeneral["18"];
+                                eventosValidar = textValidaciones.eventAttTabGeneral[18];
                             }
                         }
                     } else if(indPropPlanta == "T"){
                         if(indPropiedad == "P"){
-                            eventosValidar = eventAttTabGeneral["6"];
+                            eventosValidar = textValidaciones.eventAttTabGeneral[6];
                         }
                     } 
                 } else if(tipoEvento == "H"){
-                    eventosValidar = eventAttTabGeneral["20"];
+                    eventosValidar = textValidaciones.eventAttTabGeneral[20];
                 } else if(tipoEvento == "T"){
-                    eventosValidar = eventAttTabGeneral["20"];
+                    eventosValidar = textValidaciones.eventAttTabGeneral[20];
                 }
 
                 bOk = this.validateFields(eventosValidar,bool);
             }
 
             if(bOk && tipoEvento == "1" && indPropiedad == "P"){
-                //bOk = wdThis.wdGetEventoCustController().validarEsperaEventoAnterior();
-                visible.VisibleDescarga = true;
+                bOk = this.ctr.validarEsperaEventoAnterior();
+                textValidaciones.visible.VisibleDescarga = true;
             }
 
             if(bOk && tipoEvento == "7"){
-                //bOk = wdThis.wdGetEventoCustController().validarDatosEspera();
-                visible.VisibleDescarga = true;
+                bOk = this.ctr.validarDatosEspera();
+                textValidaciones.visible.VisibleDescarga = true;
             }
 
             if(bOk){
                 eventoActual.FechHoraIni = eventoActual.FechIni + " " + eventoActual.HoraIni;
-                if(visible.FechFin){
+                if(textValidaciones.visible.FechFin){
                     eventoActual.FechHoraFin = eventoActual.FechFin + " " + eventoActual.HoraFin;
                 }
             }
@@ -368,8 +371,8 @@ sap.ui.define([
 
         validarIncidental: function(){
             var bOk = true;
-            var nodeInciden = []; //modelo incidental
-            var ListaBiomet = [];//modelo lista biometria
+            var nodeInciden = this.ctr._listaEventos[this.ctr._elementAct].ListaIncidental; //modelo incidental
+            var ListaBiomet = this.ctr._listaEventos[this.ctr._elementAct].ListaBiometria;//modelo lista biometria
             if(nodeInciden.length > 0){
                 if(ListaBiomet.length > 0){
                     for (let index = 0; index < ListaBiomet.length; index++) {
@@ -396,7 +399,8 @@ sap.ui.define([
             return bOk;
         },
         map_onActionVerMotiLimitacion:function(event){
-            Horometro.onActionVerMotiLimitacion();
+            sap.ui.controller("Horometro").onActionVerMotiLimitacion();
+            //Horometro.onActionVerMotiLimitacion();
         }
 
 

@@ -4,22 +4,25 @@ sap.ui.define([
     "sap/m/MessageToast",
     "sap/ui/integration/library",
     "sap/m/MessageBox",
+    "../model/textValidaciones"
 ], function (
     ManagedObject,
     JSONModel,
     MessageToast,
     integrationLibrary,
-    MessageBox
+    MessageBox,
+    textValidaciones
 ) {
     "use strict";
 
     return ManagedObject.extend("com.tasa.test.controller.Horometro", {
 
-        constructor: function (oView, sFragName) {
+        constructor: function (oView, sFragName,o_this) {
 
             this._oView = oView;
             this._oControl = sap.ui.xmlfragment(oView.getId(), "com.tasa.test.fragments." + sFragName, this);
             this._bInit = false;
+            this.ctr = o_this;
             console.log("entrooooo");
 
 
@@ -37,7 +40,7 @@ sap.ui.define([
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             var bOk = true;
             var eventoActual = {}; //nodo evento actual
-            var horometroActual = eventoActual.Horometros; // nodo horometros de evento actual
+            var horometroActual = this.ctr._listaEventos[this.ctr._elementAct].ListaHorometros ;// nodo horometros de evento actual
             for (let index = 0; index < horometroActual.length; index++) {
                 const element = horometroActual[index];
                 if(element.lectura < 0){
@@ -52,8 +55,8 @@ sap.ui.define([
         },
 
         calcularCantTotalBodegaEve: function(){
-            var eventoActual = {}; //nodo evento actual
-            var bodegas = eventoActual.Bodegas; //bodegas
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct]; //nodo evento actual
+            var bodegas = eventoActual.ListaBodegas; //bodegas
             var cantTotal = 0;
             for (let index = 0; index < bodegas.length; index++) {
                 const element = bodegas[index];
@@ -63,30 +66,32 @@ sap.ui.define([
                 }
             }
             eventoActual.CantTotalPescDecla = cantTotal;
+            this._oView.getModel("eventos").updateBindings(true);
             //refrescar modelo
         },
 
         mostrarEnlaces: function(){
-            var ListaEventos = [];
-            var eventoActual = {}; //nodo evento actual
-            var indEvento = eventoActual.Indicador;
+            var ListaEventos = this.ctr._listaEventos.length;
+            var eventoActual = this.ctr._elementAct; //nodo evento actual
+            var indEvento = this.ctr._indicador;
 
             var visible = {};//nodo visible
-            visible.Links = true;
-            visible.LinkRemover = false;
-            visible.LinkDescartar = false;
+            textValidaciones.visible.Links = true;
+            textValidaciones.visible.LinkRemover = false;
+            textValidaciones.visible.LinkDescartar = false;
 
             if(indEvento == "N" && eventoActual == ListaEventos[ListaEventos - 1]){
-                visible.LinkRemover = true;
+                textValidaciones.visible.LinkRemover = true;
             }else{
-                visible.LinkDescartar = true;
+                textValidaciones.visible.LinkDescartar = true;
             }
+            this._oView.getModel("eventos").updateBindings(true);
             //refresh model
         },
 
         validarSiniestros: function(){
             var bOk = true;
-            var eventoActual = {};
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct];
             var numeroSiniestros = eventoActual.Siniestros.length;
             if(numeroSiniestros < 1){
                 bOk = false;
@@ -98,7 +103,7 @@ sap.ui.define([
 
         validarMuestra: function(){
             var bOk = true;
-            var eventoActual = {};
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct];
             var muestra = eventoActual.Muestra;
             if(muestra < 1){
                 var mssg = this.oBundle.getText("MUESDEBMAYORCERO");
