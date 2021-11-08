@@ -200,14 +200,13 @@ sap.ui.define([
         },
 
         onActionSelectTab: function(){
-            var DataSession = {};//modelo data session
-            var soloLectura = DataSession.SoloLectura;
-            var visible = {};//modelo visible
-            var eventoActual = {}; //nodo evento actual
+            var soloLectura = this.ctr._soloLectura;
+            var visible = textValidaciones.visible;//modelo visible
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct]; //nodo evento actual
             var motivoEnCalend = ["1", "2", "8"]; // Motivos de marea con registros en calendario
-            var detalleMarea = {};//modelo detalle marea
+            var detalleMarea = this.ctr._FormMarea;//modelo detalle marea
             if(!soloLectura){
-                visible.Links(false);
+                visible.Links =false;
                 var tipoEvento = eventoActual.TipoEvento;
                 var motivoMarea = detalleMarea.MotMar;
                 var fechEvento = new Date(eventoActual.FechIni);
@@ -217,12 +216,12 @@ sap.ui.define([
                         this.nextTab = this.previousTab;   
                     } else if(tipoEvento == "6" && motivoEnCalend.includes(motivoMarea)){
                         visible.visibleDescarga = false;
-                        visible.fechFin = false;
+                        visible.FechFin = false;
                         var verificarTemporada = this.verificarTemporada(motivoMarea, fechEvento);
                         if(fechEvento && !verificarTemporada){
                             this.nextTab = this.previousTab;
                         }
-                    } else if(tipoEvento == "5" && visible.tabHorometro && !validarStockCombustible){
+                    } else if(tipoEvento == "5" && visible.TabHorometro && !validarStockCombustible){
                         visible.visibleDescarga = true;
                         this.nextTab = this.previousTab;
                     }
@@ -231,8 +230,8 @@ sap.ui.define([
                 if(tipoEvento == "3" && this.nextTab !== this.previousTab){
                     if(motivoMarea == "1"){
                         var bOk = true;
-                        Horometro.calcularCantTotalBodegaEve();
-                        var validarBodegas = PescaDescargada.validarBodegaPesca(true);
+                        this.ctr.Dat_Horometro.calcularCantTotalBodegaEve();
+                        var validarBodegas = this.ctr.Dat_PescaDescargada.validarBodegaPesca(true);
                         if(bOk && this.previousTab == "General" && this.nextTab == "PescaDeclarada" && !validarBodegas){
                             this.nextTab = "Distribucion";
                         }
@@ -244,12 +243,12 @@ sap.ui.define([
                         if(bOk && this.previousTab == "Distribucion" && this.nextTab != "Biometria" && !validarBodegas){
                             this.nextTab = this.previousTab;
                         }
-                        PescaDeclarada.calcularPescaDeclarada();
+                        this.ctr.Dat_PescaDeclarada.calcularPescaDeclarada();
                     }else if(motivoMarea == "2"){
-                        PescaDeclarada.calcularCantTotalPescDeclEve();
+                        this.ctr.Dat_PescaDeclarada.calcularCantTotalPescDeclEve();
                     }
 
-                    var valCantTotPesca = PescaDeclarada.validarCantidadTotalPesca();
+                    var valCantTotPesca = this.ctr.Dat_PescaDeclarada.validarCantidadTotalPesca();
                     if(this.previousTab != "General" && !valCantTotPesca){
                         this.nextTab = this.previousTab;
                     }
@@ -268,8 +267,8 @@ sap.ui.define([
                     this.nextTab = "PescaDescargada";
                 }
 
-                var validarLecturaHorometros = Horometro.validarLecturaHorometros();
-                var validarHorometrosEvento = Horometro.validarHorometrosEvento();
+                var validarLecturaHorometros = this.ctr.Dat_Horometro.validarLecturaHorometros();
+                var validarHorometrosEvento = this.ctr.Dat_Horometro.validarHorometrosEvento();
                 if(this.previousTab == "Horometro" && (!validarLecturaHorometros || !validarHorometrosEvento)){
                     this.nextTab = this.previousTab;
                 }
@@ -399,8 +398,8 @@ sap.ui.define([
             return bOk;
         },
         map_onActionVerMotiLimitacion:function(event){
-            sap.ui.controller("Horometro").onActionVerMotiLimitacion();
-            //Horometro.onActionVerMotiLimitacion();
+            var h = Horometro;
+            this.ctr.Dat_Horometro.onActionVerMotiLimitacion();
         }
 
 

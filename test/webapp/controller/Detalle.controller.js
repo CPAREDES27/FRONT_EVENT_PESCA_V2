@@ -63,7 +63,7 @@ sap.ui.define([
             this._indicadorPropXPlanta = "P";
             this._soloLectura = false;
             this._EsperaMareaAnt = [{ "id": "0" }, { "id": "1" }];
-            this._listaEventos = [{ "Numero": "1", "id": "0", "TipoEvento": "7", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[], "ListaSiniestros": [],"ListaIncidental":[] }, { "Numero": "2", "id": "1", "TipoEvento": "2", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[],"ListaSiniestros": [],"ListaIncidental":[] }];
+            this._listaEventos = [{ "Numero": "1", "id": "0", "TipoEvento": "7", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "","CantTotalPescDeclaM":"", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[], "ListaSiniestros": [],"ListaIncidental":[],"eListaPescaDeclarada":[] }, { "Numero": "2", "id": "1", "TipoEvento": "2", "MotiNoPesca": "7", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "","CantTotalPescDeclaM":"", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[],"ListaSiniestros": [],"ListaIncidental":[],"eListaPescaDeclarada":[]  }];
             this._FormMarea = {"EsNuevo":true, "EstMarea": "C", "EstCierre": "A", "FecCierre": "02/24/2021", "HorCierre": "17:04:50", "ObseAdicional": "Prueba", "CenEmbarcacion": "T059" };
             this._mareaReabierta = false;
             this._elementAct = "1";
@@ -75,6 +75,7 @@ sap.ui.define([
             this._listasServicioCargaIni;
             this._listaEventosBkup;
             this._listaMareaAnterior;
+            this._eventoNuevo="5";
             /************ Listas iniciales vacias **************/
             this._ConfiguracionEvento = {};
             this._cmbPuntosDescarga = [];
@@ -249,6 +250,13 @@ sap.ui.define([
             o_tabSiniestro.addContent(o_fragment11.getcontrol());
             o_tabAccidente.addContent(o_fragment12.getcontrol());
             o_tabBiometria.addContent(o_fragment13.getcontrol());
+
+            //SETEAR VALOR GLOBAL FRAGMENTS
+            this.Dat_Horometro = o_fragment9;
+            this.Dat_General =o_fragment;
+            this.Dat_PescaDeclarada = o_fragment7;
+            this.Dat_Siniestro = o_fragment11;
+            this.Dat_PescaDescargada = o_fragment8;
 
             if (this._listasServicioCargaIni[9] ? true : false) {
                 this._ConfiguracionEvento = this._listasServicioCargaIni[9];

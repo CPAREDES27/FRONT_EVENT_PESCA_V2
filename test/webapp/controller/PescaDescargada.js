@@ -93,7 +93,7 @@ sap.ui.define([
         validarBodegaPesca: function (verMensaje) {
             var bOk = true;
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-            var eventoActual = this._controler._listaEventos[this._controler._elementAct];;
+            var eventoActual = this._controler._listaEventos[this._controler._elementAct];
             var cantPesca = eventoActual.ListaPescaDeclarada.length;
             var cantTotBod = eventoActual.CantTotalPescDecla;
             if ((cantTotBod > 1 && cantPesca == 0) || (cantTotBod == 0 && cantPesca > 0)) {
@@ -132,43 +132,43 @@ sap.ui.define([
         },
 
         eliminarPescaDeclarada: function () {
-            var eventoActual = {};
-            var pescaDeclarada = eventoActual.PescaDeclarada;
-            var ePescaDeclarada = eventoActual.ePescaDeclarada;
+            var eventoActual = this._controler._listaEventos[this._controler._elementAct];
+            var pescaDeclarada = eventoActual.ListaPescaDeclarada;
+            var ePescaDeclarada = eventoActual.eListaPescaDeclarada;
             for (let index = 0; index < pescaDeclarada.length; index++) {
                 const element = pescaDeclarada[index];
                 if (element.indicador == "E") {
                     var ePescaDeclarada = {
-                        Especie: element.Especie
+                        CDSPC: element.CDSPC
                     };
                     ePescaDeclarada.push(ePescaDeclarada);
                 }
             }
+            eventoActual.ObseAdicional = null;
+            eventoActual.Observacion = null;
             pescaDeclarada = [];
             //refrescar modelo
         },
 
         validarDatosEvento: function(){
-            var DataSession = {};//modelo data session
-            var DetalleMarea = {};//modelo detalle marea
-            var soloLectura = DataSession.SoloLectura;//modelo data session
+            var DetalleMarea = this._controler._FormMarea;//modelo detalle marea
+            var soloLectura = this._controler._soloLectura;//modelo data session
             var tieneErrores = DetalleMarea.TieneErrores;//modelo detalle marea
-            var listaEventos = DetalleMarea.ListaEventos;
-            var eventoActual = {};//modelo evento actual
-            var visible = {};//modelo visible
+            var listaEventos = this._controler._listaEventos;
+            var eventoActual = this._controler._listaEventos[this._controler._elementAct];//modelo evento actual
+            var visible = textValidaciones.visible;//modelo visible
             var motivoEnCalend = ["1", "2", "8"];//motivos de marea con registros en calendario
 
             if(!soloLectura && !tieneErrores){
                 var tipoEvento = eventoActual.TipoEvento;
-                var indEvento = eventoActual.Indicador;
-                var motMarea = eventoActual.MotMarea;
-                var bOk = General.validarCamposGeneral(true);
-                var eveActual = listaEventos.indexOf(eventoActual);
+                var motMarea = this._controler._motivoMarea
+                var bOk = this._controler.Dat_General.validarCamposGeneral(true);
+                var eveActual = this._controler._elementAct;
                 var cantEventos = listaEventos.length;
                 if(bOk && visible.TabHorometro){
-                    bOk = Horometro.validarLecturaHorometros();
+                    bOk = this._controler.Dat_Horometro.validarLecturaHorometros();
                     if(bOk){
-                        bOk = Horometro.validarHorometrosEvento();
+                        bOk = this._controler.Dat_Horometro.validarHorometrosEvento();
                     }
                 }
 
@@ -176,30 +176,30 @@ sap.ui.define([
                     visible.VisibleDescarga = false;
                     visible.FechFin = false;
                     var fechIni = eventoActual.FechIni;
-                    bOk = General.verificarTemporada(motMarea, fechIni);
+                    bOk = this._controler.Dat_General.verificarTemporada(motMarea, fechIni);
                 }
 
                 if(bOk && tipoEvento == "3"){
-                    visible.Descarga = true;
-                    bOk = PescaDeclarada.validarPescaDeclarada(true);
+                    visible.VisibleDescarga = true;
+                    bOk = this._controler.Dat_PescaDeclarada.validarPescaDeclarada(true);
                     if(bOk && motMarea == "1"){
-                        Horometro.calcularCantTotalBodegaEve();
+                        this._controler.Dat_Horometro.calcularCantTotalBodegaEve();
                         bOk = this.validarBodegas();
                         if(bOk){
                             bOk = this.validarBodegaPesca(true)();
                         }
                         if(bOk){
-                            bOk = PescaDeclarada.validarPorcPesca();
+                            bOk = this._controler.Dat_PescaDeclarada.validarPorcPesca();
                         }
-                        PescaDeclarada.calcularPescaDeclarada();
+                        this._controler.Dat_PescaDeclarada.calcularPescaDeclarada();
                     } else if(bOk && motMarea == "2"){
-                        PescaDeclarada.calcularCantTotalPescDeclEve();
+                        this._controler.Dat_PescaDeclarada.calcularCantTotalPescDeclEve();
                     }
                     if(bOk){
-                        PescaDeclarada.validarCantidadTotalPesca();
+                        this._controler.Dat_PescaDeclarada.validarCantidadTotalPesca();
                     }
                     if(bOk){
-                        bOk = General.validarIncidental();
+                        bOk = this._controler.Dat_General.validarIncidental();
                         if(bOk){
                             //wdThis.wdGetEventoCustController().cargarIncidental();
                         }
@@ -225,6 +225,7 @@ sap.ui.define([
                                     if(cantTotalDec < 0 || cantTotalDec == 0){
                                         element.MotiNoPesca = "7";
                                         element.Editado = true;
+                                        // falta mensaje
                                     }
                                 } else {
                                     element.MotiNoPesca = null;
@@ -235,16 +236,17 @@ sap.ui.define([
                                 visible.FechFin = false;
                                 if(cantTotalDec < 0 || cantTotalDec == 0){
                                     bOk = false;
+                                    //falta mesaje
                                     break;
                                 } else {
-                                    if(element.PescaDescargada.CantPescaDeclarada){
-                                        cantTotalDecDesc += element.PescaDescargada.CantPescaDeclarada;
+                                    if(element.ListaPescaDescargada[0].CantPescaDeclarada){
+                                        cantTotalDecDesc += element.ListaPescaDescargada[0].CantPescaDeclarada;
                                     }
                                 }
                             } else if(element.TipoEvento == "1"){
                                 visible.VisibleDescarga = true;
                                 if(cantTotalDec > 0 && cantTotalDecDesc == 0){
-
+                                    //falta mensaje
                                 }
 
                             }
@@ -256,8 +258,8 @@ sap.ui.define([
                     visible.VisibleDescarga = false;
                     visible.FechFin = false;
                     bOk = this.validarPescaDescargada();
-                    if(eventoActual.PescaDescargada.CantPescaModificada){
-                        eventoActual.CantTotalPescDescM = eventoActual.PescaDescargada.CantPescaModificada;
+                    if(eventoActual.ListaPescaDescargada[0].CantPescaModificada){
+                        eventoActual.CantTotalPescDescM = eventoActual.ListaPescaDescargada[0].CantPescaModificada;
                     }else{
                         eventoActual.CantTotalPescDescM = null;
                     }
@@ -266,7 +268,7 @@ sap.ui.define([
 
                 if(bOk && tipoEvento == "8"){
                     visible.VisibleDescarga = true;
-                    bOk = Siniestro.validarSiniestros();
+                    bOk = this._controler.Dat_Siniestro.validarSiniestros();
                 }
             }
             return bOk;
@@ -275,12 +277,12 @@ sap.ui.define([
             var bOk = true;
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             var valorAtributo = null;
-            var DetalleMarea = {}//modelo detalle de marea
-            var eventoActual = {};//modelo evento actual
-            var PescaDescargada = eventoActual.PescaDescargada; //actual pesca descargada
+            var DetalleMarea = this._controler._FormMarea;//modelo detalle de marea
+            var eventoActual = this._controler._listaEventos[this._controler._elementAct];//modelo evento actual
+            var PescaDescargada = eventoActual.ListaPescaDescargada[0]; //actual pesca descargada
             var tipoDescarga = eventoActual.TipoDescarga;
-            var indPropPlanta = eventoActual.IndPropPlanta;
-            var motMarea = eventoActual.MotMarea;
+            var indPropPlanta = this._controler._indicadorPropXPlanta;
+            var motMarea = this._controler._motivoMarea;;
             var centEmba = DetalleMarea.CenEmbarcacion;
             var atributos = ["CantPescaDescargada", "CantPescaDeclarada"];
             var mensaje = "";
@@ -313,7 +315,7 @@ sap.ui.define([
             }
 
             if(atributos){
-                var actualPescaDescargada = {}//actual pesca descargada
+                var actualPescaDescargada = PescaDescargada//actual pesca descargada
                 for (let index = 0; index < atributos.length; index++) {
                     const element = atributos[index];
                     var valor = actualPescaDescargada[element];

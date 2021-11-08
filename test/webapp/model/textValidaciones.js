@@ -348,7 +348,9 @@ sap.ui.define([], function () {
 				FechFin: true,
 				Links:true,
 				LinkRemover:true,
-				LinkDescartar:true
+				LinkDescartar:true,
+				TabHorometro : true,
+				Links :true
 			}
 		}
 

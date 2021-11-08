@@ -115,9 +115,9 @@ sap.ui.define([
 
         onActionVerMotiLimitacion: function(){
             console.log("onActionVerMotiLimitacion");
-            var eventoActual = {};
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct];
             var estOper = eventoActual.EstaOperacion;
-            var visible = {};//nodo visible
+            var visible = textValidaciones.visible;//nodo visible
             eventoActual.MotiLimitacion = null;
             if (estOper.equalsIgnoreCase("L")) {
                 eventoActual.MotiLimitacion = null;
@@ -125,6 +125,7 @@ sap.ui.define([
             } else {
                 visible.MotiLimitacion = false;
             }
+            this._oView.getModel("eventos").updateBindings(true);
             //refresh model
         },
 
@@ -142,8 +143,8 @@ sap.ui.define([
         },
 
         onActionRemoverEvento: function(){
-            var ListaEventos = [];
-            var eventoActual = {};
+            var ListaEventos = this.ctr._listaEventos;
+            var eventoActual = this.ctr._listaEventos[this.ctr.this._eventoNuevo];
             var newArray = this.farrayRemove(ListaEventos, eventoActual);
             ListaEventos = newArray;
             //refresh model
@@ -161,6 +162,7 @@ sap.ui.define([
 
         onActionDescartarCambios: function(){
             //metodo backmanage
+            this.ctr._listaEventos = this.ctr._listaEventosBkup;
             history.go(-1);
         },
 
