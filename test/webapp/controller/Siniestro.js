@@ -31,9 +31,12 @@ sap.ui.define([
 
         validarSiniestros: function(){
             var bOk = true;
+            this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             var eventoActual = this.ctr._listaEventos[this.ctr._elementAct]; //nodo evento actual
             var siniestros = eventoActual.ListaSiniestros;
             if(siniestros.length < 1){
+                var mssg = this.oBundle.getText("NOEXISINIESTROS");
+                MessageBox.error(mssg);
                 bOk = false;
             }
             return bOk;
