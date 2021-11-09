@@ -1079,24 +1079,21 @@ sap.ui.define([
         validarCantPescaDeclDesc : function() {
             var bOk = true;
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-            var DetalleMarea = {}//modelo detalle de marea
-            var eventoActual = {};//modelo evento actual
-            var indActual = eventoActual.Posicion;
-            var nroEventoTope = eventoActual.Numero;
+            var DetalleMarea = this._FormMarea;//modelo detalle de marea
+            var eventoActual = this._listaEventos[this._elementAct];//modelo evento actual
+            var indActual = this._elementAct;
+            var nroEventoTope = this._nroEvento;
             var cantTotalDecl = 0;
             var cantTotalDeclDesc = 0;
-            for (let index = (indActual + 1); index < DetalleMarea.ListaEventos.length; index++) {
+            for (let index = (indActual + 1); index <  this._listaEventos.length; index++) {
                 const element = array[index];
                 nroEventoTope = element.Numero;
                 if(element.TipoEvento == "1"){
                     break;
                 }
             }
-            /*cantTotalDecl = wdThis.wdGetEventoCustController().obtenerCantTotalPescaDecla(
-				nroEventoTope);*/
-            /*cantTotalDeclDesc =
-                wdThis.wdGetEventoCustController().obtenerCantTotalPescaDeclDesc(
-                    nroEventoTope);*/
+            cantTotalDecl = this.obtenerCantTotalPescaDecla(nroEventoTope);
+            cantTotalDeclDesc =this.obtenerCantTotalPescaDeclDesc(nroEventoTope);
             if(cantTotalDecl > cantTotalDeclDesc){
                 var mensaje = this.oBundle.getText("PESCDECDESCMAYPESCDEC");
                 MessageBox.error(mensaje);
@@ -1108,10 +1105,12 @@ sap.ui.define([
         },
 
         validarCambios: function(){
-            var bOk = PescaDescargada.validarDatosEvento();
-            var detalleMarea = {};//modelo detalle marea
+            var bOk = this.Dat_PescaDescargada.validarDatosEvento();
+            var detalleMarea = this._FormMarea;//modelo detalle marea
             if(!bOk){
-                Horometro.mostrarEnlaces();
+                var mensaje = this.oBundle.getText("DISCCHANEVENTMESSAGE");
+                MessageBox.error(mensaje);
+                this.Dat_Horometro.mostrarEnlaces();
             }else{
                 detalleMarea.FormEditado = true;
             }
@@ -1120,10 +1119,9 @@ sap.ui.define([
 
         validarDatos: function(){
             var DataSession = {};//modelo data session
-            var soloLectura = DataSession.SoloLectura;
-            var visible = {};//modelo visible
-            var eventoActual = {}; //nodo evento actual
-            var detalleMarea = {};//modelo detalle marea
+            var visible = textValidaciones.visible;//modelo visible
+            var eventoActual = this._listaEventos[this._elementAct]; //nodo evento actual
+            var detalleMarea = this._FormMarea;//modelo detalle marea
             var isRolIngComb = DataSession.IsRolIngComb;
             if(eventoActual.TipoEvento == "6"){
                 visible.VisibleDescarga = false;
@@ -1132,9 +1130,8 @@ sap.ui.define([
                 visible.VisibleDescarga = true;
             }
 
-            //var validarMareaEventos = wdThis.wdGetFormCustController().validarMareaEventos();
-            var validarMareaEventos = true;
-            var validarDatosEvento = PescaDescargada.validarDatosEvento();
+            var validarMareaEventos = this.validarMareaEventos();
+            var validarDatosEvento = this.Dat_PescaDescargada.validarDatosEvento();
             if(validarMareaEventos){
                 if(validarDatosEvento && !detalleMarea.TieneErrores){
                     if(isRolIngComb){
@@ -1153,6 +1150,27 @@ sap.ui.define([
                 this.getView().addDependent(this.oDialog);
             }
             return this.oDialog;
+        },
+        validarMareaEventos:function(){
+            let motMarea = this._motivoMarea;
+    
+            if (!this.buscarValorFijo(textValidaciones.MOTIVOSINZARPE, motMarea)) {
+                if (this._listaEventos != null) {
+                    for (let i = 0; i < this._listaEventos.length; i++){
+                        
+                        if (this._listaEventos[i].TipoEvento == "1") { // Valido si existe al menos un evento de zarpe
+                            return true;
+                        }
+                    }
+                }
+                var mensaje = this.oBundle.getText("NOEXISTEZARPE");
+                MessageBox.error(mensaje);
+                
+            } else {
+                return true;
+            }
+            
+            return false;
         },
         //-----------------------------
 
