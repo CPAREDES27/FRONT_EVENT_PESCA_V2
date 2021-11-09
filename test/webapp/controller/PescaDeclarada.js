@@ -143,11 +143,14 @@ sap.ui.define([
 
         validarCantidadTotalPesca: function(){
             var bOk = true;
+            this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             var detalleMarea = this.ctr._FormMarea;//modelo de detalle de marea
             var indProp =  this.ctr._indicadorProp;//obtener indicador de propeidad del modelo de marea
             var cantTotal = 0;
 
             if(indProp == "T" && (cantTotal == null || (cantTotal != null))){
+                var mssg = this.oBundle.getText("CANTPESCANOCERO");
+                MessageBox.error(mssg);
                 bOk = false;
             }
 

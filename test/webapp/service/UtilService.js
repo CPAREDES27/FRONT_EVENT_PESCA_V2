@@ -112,6 +112,14 @@ sap.ui.define([
                 p_nrdes: ""
             };
             return sBody;
+        },
+
+        getBodyConHorom: function(){
+            var sBody = {
+                ip_cdemb: "",
+                ip_nrmar: ""
+            };
+            return sBody;
         }
 
 

@@ -273,6 +273,38 @@ sap.ui.define([
             }
             return bOk;
         },
+
+        cargarIncidental: function(){
+            var bOk = true;
+            var ndInciden = []; // lista de incidental
+            var ndIncidenTemp = []; // lista de incidental temp
+            var Utils = {};// objeto utils
+            if(ndIncidenTemp.length > 0){
+                var tmp = [];
+                for (let index = 0; index < ndIncidenTemp.length; index++) {
+                    const element = ndIncidenTemp[index];
+                    if(element.Nrenv != Utils.NroEvento_Incidental){
+                        tmp.push(element);
+                    }
+                }
+                ndIncidenTemp = tmp;
+            }
+            if(ndInciden.legnth > 0){
+                for (let index = 0; index < ndInciden.length; index++) {
+                    const element = ndInciden[index];
+                    var newObject = {
+                        Cdspc: element.Cdspc,
+                        Dsspc: element.Dsspc,
+                        Nrenv: element.Nrenv,
+                        Nrmar: element.Nrmar,
+                        Pcspc: element.Pcspc
+                    };
+                    ndIncidenTemp.push(newObject);  
+                }
+            }
+            return bOk;
+        },
+
         validarPescaDescargada: function(){
             var bOk = true;
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
@@ -322,7 +354,7 @@ sap.ui.define([
                     if(!valor){
                         bOk = false;
                         mensaje = this.oBundle.getText("MISSINGFIELD", [element]);
-                        //agregar mensaje al modelo de message popover
+                        MessageBox.error(mensaje);
                     }
                     
                 }
@@ -333,12 +365,37 @@ sap.ui.define([
                     PescaDescargada.CantPescaModificada = PescaDescargada.CantPescaDescargada;
                     //refrescar modelo
                 }
-                if(PescaDescargada.CantPescaDeclarada < 0){
+                if(PescaDescargada.CantPescaModificada < 0){
                     bOk = false;
+                    mensaje = this.oBundle.getText("CANTDESCARGANOCERO");
+                    MessageBox.error(mensaje);
                 }
-                
-            }
 
+                if(bOk){
+                    if(PescaDescargada.CantPescaDeclarada < 0){
+                        bOk = false;
+                        mensaje = this.oBundle.getText("CANTDECLDESCNOCERO");// no se encontro en el pool de mensajes CANTDECLDESCNOCERO
+                        MessageBox.error(mensaje);
+                    }
+
+                    if(bOk){
+                        //bOk = wdThis.validarCantPescaDeclDesc(); llamar a metodo validarCantPescaDeclDesc
+                        if(bOk && motMarea == "2" && indPropPlanta == "P"){
+                            if(PescaDescargada.CantPescaModificada != PescaDescargada.BckCantPescaModificada){
+                                if(PescaDescargada.CantPescaModificada > PescaDescargada.BckCantPescaModificada){
+                                    PescaDescargada.IndEjecucion = "R";
+                                }else{
+                                    bOk = false;
+                                    mensaje = this.oBundle.getText("ERRORCANTREINT");
+                                    MessageBox.error(mensaje);
+                                }
+                            }
+                        }
+                    }
+                }
+            }else{
+                bOk = false;
+            }
             return bOk;
         },
 

@@ -433,6 +433,44 @@ sap.ui.define([
             return this.http(uri).post(null, sBody).then(function(response){
                 return response;
             });
+        },
+
+        obtenerCapaTanBarca: function(cdemb){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["CDTAN"];
+            sBody.option[0].wa = "CDEMB = '" + cdemb + "'";
+            sBody.tabla = "ZFLEMB";
+            return this.http(uri).post(null, sBody).then(function(response){
+                var data = JSON.parse(response);
+                return data;
+            });
+        },
+
+        consultarHorometro: function(cdemb, nrmar){
+            var uri = UtilService.getHostService() + "/api/embarcacion/consultarHorometro/";
+            var sBody = UtilService.getBodyConHorom();
+            sBody.ip_cdemb = cdemb;
+            sBody.ip_nrmar = nrmar;
+            return this.http(uri).post(null, sBody).then(function(response){
+                var data = JSON.parse(response);
+                return data;
+            });
+        },
+
+        obtenerMillasLitoral: function(latiCalaD, latiCalaM){
+            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
+            var sBody = UtilService.getBodyReadTable();
+            sBody.delimitador = "|";
+            sBody.fields = ["LATGR", "LATMI", "LONGR", "LONMI"];
+            sBody.option[0].wa = "LATGR = '" + latiCalaD +"' AND LATMI >= '" + latiCalaM + "' AND LATMI < '" + (latiCalaM + 1) + "' ";
+            sBody.order = "LATMI ASCENDING";
+            sBody.tabla = "ZFLLLL";
+            return this.http(uri).post(null, sBody).then(function(response){
+                var data = JSON.parse(response);
+                return data;
+            });
         }
 
 

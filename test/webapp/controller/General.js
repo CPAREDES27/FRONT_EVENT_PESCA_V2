@@ -8,7 +8,8 @@ sap.ui.define([
     "./PescaDescargada",
     "./PescaDeclarada",
     "./Siniestro",
-    "../model/textValidaciones"
+    "../model/textValidaciones",
+    "sap/m/MessageBox"
 ], function(
 	ManagedObject,
     JSONModel,
@@ -19,7 +20,8 @@ sap.ui.define([
     PescaDescargada,
     PescaDeclarada,
     Siniestro,
-    textValidaciones
+    textValidaciones,
+    MessageBox
 ) {
 	"use strict";
 
@@ -53,12 +55,13 @@ sap.ui.define([
                 if (attributeName.hasOwnProperty(key)) {
                     var value = attributeName[key];
                     if (!value) {
+                        bOk = false;
                         var message = this.oBundle.getText("CAMPONULL", [value]);
                         messages.push(message);
                     }
                 }
             }
-            return messages;
+            return bOk;
         },
 
         messagePopover: function(){
@@ -120,7 +123,7 @@ sap.ui.define([
                 bOk = this.validateFields(textValidaciones.eventAttTabGeneral[Number(tipoEvento)],bool);
                 if(bOk && tipoEvento == "3"){
                     textValidaciones.visible.VisibleDescarga = true;
-                    //bOk =  wdThis.wdGetEventoCustController().validarLatitudLongitud()
+                    bOk =  this.validarLatitudLongitud();
                 }
             } else {
                 var estOperacion = eventoActual.EstaOperacion;
@@ -199,6 +202,85 @@ sap.ui.define([
             return bOk;
         },
 
+        validarLatitudLongitud: function(){
+            var bOk = true;
+            this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+            var listaEventos = []; //modelo de lista de eventos
+            var detalleMarea = {};//cargar modelo detalle marea
+            var eventoActual = {};//modelo de evento
+            var latitudD = eventoActual.LatitudD;
+            var latitudM = eventoActual.LatitudM;
+            var longitudD = eventoActual.LongitudD;
+            var longitudM = eventoActual.LongitudM;
+            var indiPropiedad = detalleMarea.IndPropiedad;
+            if(latitudM < 0 || latitudM > 59 || longitudM < 0 || longitudM > 59){
+                bOk = false;
+                var message = this.oBundle.getText("MINGEOGRAFINV");
+                MessageBox.error(message);
+            } else {
+                var latiMin = eventoActual.ZPLatiIni;
+		        var latiMax = eventoActual.ZPLatiFin;
+		        var longMin = eventoActual.ZPLongIni;
+		        var longMax = eventoActual.ZPLongFin;
+                var latitud = latitudD * 100 + latitudM;
+		        var longitud = longitudD * 100 + longitudM;
+                if(indiPropiedad == "P"){
+                    if((latitud < latiMin || latitud > latiMax) || (longitud < longMin || longitud > longMax)){
+                        var message = this.oBundle.getText("COORDNOZONAPESCA");
+                        MessageBox.error(message);
+                    }
+                }
+
+                var sLatitud = this.formatNumber(latitud, "00000");
+                var sLongitud = this.formatNumber(longitud, "00000");
+                var sBckLatitud = eventoActual.BackLatitud;
+                var sBckLongitud = eventoActual.BackLongitud;
+                eventoActual.Latitud = sLatitud;
+                eventoActual.Longitud = sLongitud;
+                if((sBckLatitud || sLatitud != sBckLatitud) || (sBckLongitud || sLongitud != sBckLongitud)){
+                    bOk = this.validarMillasLitoral();
+                    eventoActual.ObteEspePermitidas = true;
+                }
+                eventoActual.BackLatitud = sLatitud;
+                eventoActual.BckLongitud = Longitud;
+            }
+            return bOk;
+        },
+
+        formatNumber: function(numero, formato){
+            var strNumber = numero.toString();// "123"
+            var diffLength = formato.length - strNumber.length;
+            var newValue = "";
+            if(diffLength > 0){
+                var ceros = "";
+                for (let index = 0; index < diffLength; index++) {
+                    ceros += "0";
+                }
+                newValue = ceros.concat(strNumber);
+            }else{
+                newValue = numero;
+            }
+            return newValue;
+        },
+
+        validarMillasLitoral: function(){
+            var bOk = true;
+            var eventoActual = {};//modelo de evento
+            var latiCalaD = eventoActual.LatitudD;
+            var latiCalaM = eventoActual.LatitudM;
+            var latiCala = latiCalaD*100 + latiCalaM;
+            var longCalaD = eventoActual.LongitudD;
+            var longCalaM = eventoActual.LongitudM;
+            var longCala = longCalaD*100 + longCalaM;
+            TasaBackendService.obtenerMillasLitoral(latiCalaD, latiCalaM).then(function(response){
+                //no hay registro en la tabla de SAP S/4 QAS
+                
+            }).catch(function(error){
+                console.log("ERROR: General.validarMillasLitoral - ", error);
+            });
+            return bOk;
+        },
+
         onActionSelectTab: function(){
             var soloLectura = this.ctr._soloLectura;
             var visible = textValidaciones.visible;//modelo visible
@@ -274,7 +356,7 @@ sap.ui.define([
                 }
 
                 if(this.nextTab == "PescaDescargada"){
-                    //wdThis.wdGetEventoCustController().prepararInputsDescargas();
+                    this.prepararInputsDescargas();
                 }
 
                 var validarPescaDescargada = PescaDescargada.validarPescaDescargada();
@@ -289,6 +371,46 @@ sap.ui.define([
 
             }
             //refrescar modelos
+        },
+
+        prepararInputsDescargas: function(){
+            var indActual = 0;//indicie actual de la lista de eventos
+            var DetalleMarea =  {};// modelo detalle marea
+            var ListaEventos = DetalleMarea.ListaEventos; // mapear modelo de lista de eventos
+            var eventosElement = ListaEventos[indActual - 1];
+            var fechaIni = eventosElement.FechIni;
+            var horaIni = eventosElement.HoraIni;
+            var eveVisFechaFin = ["3", "6", "7"];
+            var motMarea = DetalleMarea.MotMarea;
+            var inputsDescarga = {};// mapear modelo de inputs descarga
+            if(eveVisFechaFin.includes(eventosElement.TipoEvento)){
+                fechaIni = eventosElement.FechFin;
+                horaIni = eventosElement.HoraFin;
+            }
+            if(motMarea == "1"){
+                inputsDescarga.Planta = eventosElement.Planta;
+                inputsDescarga.Matricula = DetalleMarea.Matricula;
+                inputsDescarga.CentPlanta ="FP12";
+			    inputsDescarga.DescPlanta = "TASA CHD";
+			    inputsDescarga.Embarcacion = DetalleMarea.Embarcacion;
+			    inputsDescarga.DescEmbarcacion = DetalleMarea.DescEmbarcacion;
+			    inputsDescarga.FechInicio = fechaIni;
+			    inputsDescarga.HoraInicio = horaIni;
+			    inputsDescarga.Estado = "N";
+			    inputsDescarga.TipoPesca = "D";
+            }else if(motMarea == "2"){
+                inputsDescarga.Planta = eventosElement.Planta;
+                inputsDescarga.Matricula = DetalleMarea.Matricula;
+                inputsDescarga.CentPlanta = eventosElement.CentPlanta;
+			    inputsDescarga.DescPlanta = eventosElement.DescPlanta;
+			    inputsDescarga.Embarcacion = DetalleMarea.Embarcacion;
+			    inputsDescarga.DescEmbarcacion = DetalleMarea.DescEmbarcacion;
+			    inputsDescarga.FechInicio = fechaIni;
+			    inputsDescarga.HoraInicio = horaIni;
+			    inputsDescarga.Estado = "N";
+			    inputsDescarga.TipoPesca = "I";
+            }
+            //refresh model
         },
 
         verificarTemporada: function(motivo, fecha){
