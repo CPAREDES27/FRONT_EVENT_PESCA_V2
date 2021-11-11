@@ -60,7 +60,6 @@ sap.ui.define([
         validarBodegas: function () {
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             var bOk = true;
-            var eventoActual = {};
             var bodegas = this._controler._listaEventos[this._controler._elementAct].ListaBodegas;
             var cantTotal = 0;
             var mensaje = "";
@@ -201,7 +200,7 @@ sap.ui.define([
                     if(bOk){
                         bOk = this._controler.Dat_General.validarIncidental();
                         if(bOk){
-                            //wdThis.wdGetEventoCustController().cargarIncidental();
+                            this.cargarIncidental();
                         }
                     }
 
@@ -226,6 +225,8 @@ sap.ui.define([
                                         element.MotiNoPesca = "7";
                                         element.Editado = true;
                                         // falta mensaje
+                                        mensaje = this.oBundle.getText("EVEARRCAMBMOTNOPES");
+                                        MessageBox.error(mensaje);
                                     }
                                 } else {
                                     element.MotiNoPesca = null;
@@ -237,6 +238,8 @@ sap.ui.define([
                                 if(cantTotalDec < 0 || cantTotalDec == 0){
                                     bOk = false;
                                     //falta mesaje
+                                    mensaje = this.oBundle.getText("EXIEVEDESCPESDECNOVAL");
+                                    MessageBox.error(mensaje);
                                     break;
                                 } else {
                                     if(element.ListaPescaDescargada[0].CantPescaDeclarada){
@@ -247,6 +250,8 @@ sap.ui.define([
                                 visible.VisibleDescarga = true;
                                 if(cantTotalDec > 0 && cantTotalDecDesc == 0){
                                     //falta mensaje
+                                    mensaje = this.oBundle.getText("EXIPESDECNOEXIPESDES");
+                                    MessageBox.error(mensaje);
                                 }
 
                             }
@@ -263,7 +268,7 @@ sap.ui.define([
                     }else{
                         eventoActual.CantTotalPescDescM = null;
                     }
-                    //wdThis.wdGetEventoCustController().obtenerTipoDescarga(eveActual);
+                    this.obtenerTipoDescarga(eveActual);
                 }
 
                 if(bOk && tipoEvento == "8"){
@@ -276,8 +281,8 @@ sap.ui.define([
 
         cargarIncidental: function(){
             var bOk = true;
-            var ndInciden = []; // lista de incidental
-            var ndIncidenTemp = []; // lista de incidental temp
+            var ndInciden = []; // lista de incidental viene del modelo de alejandro
+            var ndIncidenTemp = []; // lista de incidental temp viene del modelo de alejandro
             var Utils = {};// objeto utils
             if(ndIncidenTemp.length > 0){
                 var tmp = [];
@@ -304,6 +309,23 @@ sap.ui.define([
             }
             return bOk;
         },
+        obtenerTipoDescarga:function(evento){
+            let eventoElement = this._controler._listaEventos[evento];
+            let indPropiedad = this._controler._motivoMarea;
+            let indPropPlanta = eventoElement.IndPropPlanta;
+            let tipoDescarga = eventoElement.TipoDescarga;
+
+            eventoElement.ListaPescaDescargada[0].TipoDesc = null;
+            
+            if (indPropiedad == "T") {
+                eventoElement.ListaPescaDescargada[0].TipoDesc = "C";
+            } else if (indPropiedad == "P") {
+                if (indPropPlanta == "T" && tipoDescarga == "V") {
+                    eventoElement.ListaPescaDescargada[0].TipoDesc = "V";
+                }
+            }	
+
+        },
 
         validarPescaDescargada: function(){
             var bOk = true;
@@ -327,6 +349,7 @@ sap.ui.define([
                 if(PescaDescargada.Indicador == "N"){
                     PescaDescargada.NroDescarga = tipoDescarga + centEmba;
                     //Refrescar modelo
+                    this._oView.getModel("eventos").updateBindings(true);
                 }
                 PescaDescargada.FechContabilizacion = eventoActual.FechProduccion;
                 PescaDescargada.Planta = eventoActual.Planta;
@@ -339,6 +362,7 @@ sap.ui.define([
                 eventoActual.FechProduccion = PescaDescargada.FechContabilizacion;
                 eventoActual.CantTotalPescDecla = PescaDescargada.CantPescaDeclarada;
                 //refrescar modelo
+                this._oView.getModel("eventos").updateBindings(true);
                 if (PescaDescargada.NroDescarga) {
                     mensaje = this.oBundle.getText("SELECCDESCARGA");
                     MessageBox.error(mensaje);
@@ -364,6 +388,7 @@ sap.ui.define([
                 if(indPropPlanta == "T"){
                     PescaDescargada.CantPescaModificada = PescaDescargada.CantPescaDescargada;
                     //refrescar modelo
+                    this._oView.getModel("eventos").updateBindings(true);
                 }
                 if(PescaDescargada.CantPescaModificada < 0){
                     bOk = false;
@@ -379,7 +404,7 @@ sap.ui.define([
                     }
 
                     if(bOk){
-                        //bOk = wdThis.validarCantPescaDeclDesc(); llamar a metodo validarCantPescaDeclDesc
+                        bOk = this._controler.validarCantPescaDeclDesc(); //llamar a metodo validarCantPescaDeclDesc
                         if(bOk && motMarea == "2" && indPropPlanta == "P"){
                             if(PescaDescargada.CantPescaModificada != PescaDescargada.BckCantPescaModificada){
                                 if(PescaDescargada.CantPescaModificada > PescaDescargada.BckCantPescaModificada){

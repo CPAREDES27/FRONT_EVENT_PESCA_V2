@@ -46,36 +46,42 @@ sap.ui.define([
         onInit: function () {
 
             this.formEnableAtrib = true;
+            //modelo de alejandro
+            let ListaEventos_cont = this.getView().getModel("initModel").getData().Eventos.Lista; 
+            let MareaAnterior_cont =this.getView().getModel("initModel").getData().MareaAnterior; 
+            let EsperaMareaAnt_cont = this.getView().getModel("initModel").getData().EsperaMareaAnt;  
+            let FormEvent_cont = this.getView().getModel("initModel").getData().Eventos;
 
             /********* Carga de variables globales **********/
             this._utilNroEventoBio = "001";
             this._utilNroEventoIncid = "001";
-            this._utilFlagVistaBiometria = true;
-            this._motivoMarea = "1";
-            this._tipoEvento = "6";
-            this._nroEvento = "3";
-            this._nroMarea = "165728";
-            this._nroDescarga = "TCHI001444";
-            this._indicador = "E";
-            this._indicadorProp = "T";
-            this._codPlanta = "0119";
-            this._embarcacion = "0000000012";
-            this._indicadorPropXPlanta = "P";
-            this._soloLectura = false;
-            this._EsperaMareaAnt = [{ "id": "0" }, { "id": "1" }];
-            this._listaEventos = [{ "Numero": "1", "id": "0", "TipoEvento": "7", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "","CantTotalPescDeclaM":"", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[], "ListaSiniestros": [],"ListaIncidental":[],"eListaPescaDeclarada":[] }, { "Numero": "2", "id": "1", "TipoEvento": "2", "MotiNoPesca": "7", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "","CantTotalPescDeclaM":"", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[],"ListaSiniestros": [],"ListaIncidental":[],"eListaPescaDeclarada":[]  }];
-            this._FormMarea = {"EsNuevo":true, "EstMarea": "C", "EstCierre": "A", "FecCierre": "02/24/2021", "HorCierre": "17:04:50", "ObseAdicional": "Prueba", "CenEmbarcacion": "T059" };
+            this._motivoMarea = FormEvent_cont.MotMarea;
+            this._tipoEvento = ListaEventos_cont[this._elementAct].TipoEvento;
+            this._nroEvento = "3";//ESTE ES EL NUMERO DEL EVENTO SELECCIONADO DE LA LISTA DE DETALLE
+            this._nroMarea = FormEvent_cont.Marea;//"165728";
+            this._nroDescarga = FormEvent_cont.nroDescarga;//"TCHI001444";
+            this._indicador = ListaEventos_cont[this._elementAct].Indicador;//"E";
+            this._indicadorProp = FormEvent_cont.IndPropiedad;
+            this._codPlanta = ListaEventos_cont[this._elementAct].Planta;
+            this._embarcacion = FormEvent_cont.Embarcacion;//"0000000012";
+            this._indicadorPropXPlanta = ListaEventos_cont[this._elementAct].IndPropPlanta;
+            this._soloLectura = false;//data de session solo lectura obtenida desde el principal
+            this._EsperaMareaAnt = EsperaMareaAnt_cont;//[{ "id": "0" }, { "id": "1" }]; 
+            this._listaEventos = ListaEventos_cont;
+            this._FormMarea = FormEvent_cont;
+            //this._listaEventos = [{ "Numero": "1", "id": "0", "TipoEvento": "7", "MotiNoPesca": "no pesca", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "","CantTotalPescDeclaM":"", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[], "ListaSiniestros": [],"ListaIncidental":[],"eListaPescaDeclarada":[] }, { "Numero": "2", "id": "1", "TipoEvento": "2", "MotiNoPesca": "7", "EstaOperacion": "L", "ObseAdicional": "Prueba", "ZPLatiIni": "", "ZPLatiFin": "", "ZPLongIni": "", "ZPLongFin": "", "CantTotalPescDecla": "","CantTotalPescDeclaM":"", "ListaBodegas": [],"ListaBiometria": [], "ListaPescaDeclarada" : [], "ListaPescaDescargada" : [],"ListaHorometros" : [], "ListaEquipamiento" :[], "ListaAccidente" :[],"ListaSiniestros": [],"ListaIncidental":[],"eListaPescaDeclarada":[]  }];
+            //this._FormMarea = {"EsNuevo":true, "EstMarea": "C", "EstCierre": "A", "FecCierre": "02/24/2021", "HorCierre": "17:04:50", "ObseAdicional": "Prueba", "CenEmbarcacion": "T059" };
             this._mareaReabierta = false;
-            this._elementAct = "1";
-            this._zonaPesca = "0007";
-            this._IsRolRadOpe = true;
-            this._IsRolIngComb = true;
-            this._tipoPreservacion = "";
-            this._opSistFrio = false;
+            this._elementAct = "1";//ESTE ES ITEM DE LA LISTA DE EVENTOS SELECCIONADO
+            this._zonaPesca = ListaEventos_cont[this._elementAct].ZonaPesca;
+            this._IsRolRadOpe = true; //ESTO ES VALORES DE SON DE ROLES QUE VIENE DE MAREA
+            this._IsRolIngComb = true;//ESTO ES VALORES DE SON DE ROLES QUE VIENE DE MAREA
+            this._tipoPreservacion = ""; //viene de la consulta al servicio
+            this._opSistFrio = false; //VALOR DE UTILITARIO DE LA VISTA GLOBAL
             this._listasServicioCargaIni;
             this._listaEventosBkup;
-            this._listaMareaAnterior;
-            this._eventoNuevo="5";
+            this._listaMareaAnterior = MareaAnterior_cont;
+            this._eventoNuevo="5"; //VALOR DEL ID DEL EVENTO NUEVO DE LA LISTA PRINCIPAL
             /************ Listas iniciales vacias **************/
             this._ConfiguracionEvento = {};
             this._cmbPuntosDescarga = [];
@@ -1049,6 +1055,12 @@ sap.ui.define([
           
             return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
           },
+        removerEvento_button:function(){
+            this.Dat_Horometro.onActionRemoverEvento();
+        },
+        descartarCambios_button(){
+            this.Dat_Horometro.onActionDescartarCambios()
+        },
 
         prepararVistaRevision: function () {
             this.getView().byId("cb_ZonaPesca").setEnabled(false);
@@ -1114,6 +1126,7 @@ sap.ui.define([
             }else{
                 detalleMarea.FormEditado = true;
             }
+            this.getView().getModel("eventos").updateBindings(true);
             //refresh model
         },
 
@@ -1165,7 +1178,7 @@ sap.ui.define([
                 }
                 var mensaje = this.oBundle.getText("NOEXISTEZARPE");
                 MessageBox.error(mensaje);
-                
+
             } else {
                 return true;
             }

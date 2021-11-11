@@ -56,8 +56,14 @@ sap.ui.define([
                     var value = attributeName[key];
                     if (!value) {
                         bOk = false;
-                        var message = this.oBundle.getText("CAMPONULL", [value]);
-                        messages.push(message);
+                        if(verMensajes){
+                            var message = this.oBundle.getText("CAMPONULL", [value]);
+                            messages.push(message);
+                        }
+                        else{
+                            break;
+                        }
+                        
                     }
                 }
             }
@@ -205,9 +211,8 @@ sap.ui.define([
         validarLatitudLongitud: function(){
             var bOk = true;
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-            var listaEventos = []; //modelo de lista de eventos
-            var detalleMarea = {};//cargar modelo detalle marea
-            var eventoActual = {};//modelo de evento
+            var detalleMarea = this.ctr._FormMarea;//cargar modelo detalle marea
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct];//modelo de evento
             var latitudD = eventoActual.LatitudD;
             var latitudM = eventoActual.LatitudM;
             var longitudD = eventoActual.LongitudD;
@@ -265,7 +270,7 @@ sap.ui.define([
 
         validarMillasLitoral: function(){
             var bOk = true;
-            var eventoActual = {};//modelo de evento
+            var eventoActual = this.ctr._listaEventos[this.ctr._elementAct];//modelo de evento
             var latiCalaD = eventoActual.LatitudD;
             var latiCalaM = eventoActual.LatitudM;
             var latiCala = latiCalaD*100 + latiCalaM;
@@ -370,13 +375,14 @@ sap.ui.define([
                 }
 
             }
+            this._oView.getModel("eventos").updateBindings(true);
             //refrescar modelos
         },
 
         prepararInputsDescargas: function(){
             var indActual = 0;//indicie actual de la lista de eventos
-            var DetalleMarea =  {};// modelo detalle marea
-            var ListaEventos = DetalleMarea.ListaEventos; // mapear modelo de lista de eventos
+            var DetalleMarea =  this.ctr._FormMarea;// modelo detalle marea
+            var ListaEventos = this.ctr._listaEventos; // mapear modelo de lista de eventos
             var eventosElement = ListaEventos[indActual - 1];
             var fechaIni = eventosElement.FechIni;
             var horaIni = eventosElement.HoraIni;
@@ -410,6 +416,7 @@ sap.ui.define([
 			    inputsDescarga.Estado = "N";
 			    inputsDescarga.TipoPesca = "I";
             }
+            this._oView.getModel("eventos").updateBindings(true);
             //refresh model
         },
 
@@ -438,7 +445,7 @@ sap.ui.define([
         },
 
         consultarPermisoPesca: function(cdemb, motivo){
-            var detalleMarea = {};//modelo detalle marea
+            var detalleMarea = this._controler._FormMarea;//modelo detalle marea
             var codTemp = "";
             if(motivo == "1"){
                 codTemp = "D";

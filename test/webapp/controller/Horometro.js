@@ -146,7 +146,7 @@ sap.ui.define([
 
         onActionRemoverEvento: function () {
             var ListaEventos = this.ctr._listaEventos;
-            var eventoActual = this.ctr._listaEventos[this.ctr.this._eventoNuevo];
+            var eventoActual = this.ctr._listaEventos[this.ctr._eventoNuevo];
             var newArray = this.farrayRemove(ListaEventos, eventoActual);
             ListaEventos = newArray;
             //refresh model
@@ -183,9 +183,9 @@ sap.ui.define([
         validarHorometrosEvento: function () {
             this.oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
             var bOk = true;
-            var listaEventos = []; //modelo de lista de eventos
-            var detalleMarea = {};//cargar modelo detalle marea
-            var eventoActual = {};//model ode evento
+            var listaEventos = this.ctr._listaEventos; //modelo de lista de eventos
+            var detalleMarea = this.ctr._FormMarea;//cargar modelo detalle marea
+            var eventoActual = listaEventos[this.ctr._elementAct];//model ode evento
             var eventoCompar = null;
             var tipoEvento = eventoActual.TipoEvento;
             var motivoMarea = detalleMarea.MotMar;
@@ -203,7 +203,7 @@ sap.ui.define([
                 eventoCompar = listaEventos[index];
                 if (evenLimites.includes(eventoCompar.TipoEvento)) {
                     indCompar = index;
-                    //validar y ejecutar metodo wdThis.wdGetEventoCustController().obtenerDetalleEvento()
+                    this.ctr.obtenerDetalleEvento();
                     break;
                 }
             }
@@ -215,8 +215,8 @@ sap.ui.define([
             var capaTanBarca = this.getCapaTanEmba(detalleMarea.Embarcacion);
             var LectUltHoro = this.obtenerLectUltHoro();
             if (indCompar > -1 && eventoActual.FechIni != null && eventoCompar.FechIni != null) {
-                var nodoHoroActual = eventoActual.Horometros;
-                var nodoHoroCompar = eventoCompar.Horometros;
+                var nodoHoroActual = eventoActual.ListaHorometros;
+                var nodoHoroCompar = eventoCompar.ListaHorometros;
                 var fechIniEveAct = eventoActual.FechIni; //dd/MM/yyyy
                 var horaIniEveAct = eventoActual.HoraIni; // hh:mm formato 24h
                 var dateIniEveAct = null;
@@ -280,7 +280,7 @@ sap.ui.define([
                 }
             } else if (LectUltHoro) {
                 var eventoCLH = detalleMarea.EventoCLH;
-                var nodoHoroActual = eventoActual.Horometros;
+                var nodoHoroActual = eventoActual.ListaHorometros;
                 var nodoHoroCompar = eventoCLH.HorometrosCLH;
                 var fechIniEveAct = eventoActual.FechIni; //dd/MM/yyyy
                 var horaIniEveAct = eventoActual.HoraIni; // hh:mm formato 24h
@@ -394,6 +394,7 @@ sap.ui.define([
                         };
                         nodoHoroCLH.push(obj);
                     }
+                    //REFRESCAR MODELO PRINCIPAL DE ALEJANDRO
                     //refrescar modelo mareaClh
                 }
             }).catch(function(error){
@@ -403,7 +404,7 @@ sap.ui.define([
             return true;
         },
 
-        onCheckBoxSelected: function (oEvent) {
+        onCheckBoxSelected: function (oEvent) {//EVENTO DE PRUEBA
             var oSelectedItem2 = this._oView.byId("prue").mAggregations.items;
             for (var i = 0; i < oSelectedItem2.length; i++) {
                 var prop = oSelectedItem2[i].mProperties;
