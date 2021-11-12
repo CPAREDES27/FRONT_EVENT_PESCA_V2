@@ -120,6 +120,27 @@ sap.ui.define([
                 ip_nrmar: ""
             };
             return sBody;
+        },
+        getConsultaGeneral: function(){
+            var sBody = {
+                nombreConsulta: "",
+                p_user: "FGARCIA",
+                parametro1: "",
+                parametro2: "",
+                parametro3: "",
+                parametro4: "",
+                parametro5: ""
+            };
+            return sBody;
+        },
+        getConsultaMareaBio: function(){
+            var sBody = {
+                p_flag: "",
+                user: "FGARCIA",
+                p_marea: "",
+                p_embarcacion: ""
+            };
+            return sBody;
         }
 
 

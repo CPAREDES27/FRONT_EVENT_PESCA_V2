@@ -197,12 +197,10 @@ sap.ui.define([
         },
         ////////////////////////////////////////////////////
         obtenerCodigoTipoPreservacion: function(cdemb){
-            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
-            var sBody = UtilService.getBodyReadTable();
-            sBody.delimitador = "|";
-            sBody.fields = ["CDTPR"];
-            sBody.option[0].wa = "CDEMB = '" + cdemb + "'";
-            sBody.tabla = "ZFLEMB";
+            var uri = UtilService.getHostService() + "/api/General/ConsultaGeneral/";
+            var sBody = UtilService.getConsultaGeneral();
+            sBody.nombreConsulta = "CONSGENCODTIPRE";
+            sBody.parametro1 = cdemb;
             return this.http(uri).post(null, sBody).then(function(response){
                 return response;
             });
@@ -210,12 +208,10 @@ sap.ui.define([
 
         },
         obtenerListaEquipamiento: function(cdemb){
-            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
-            var sBody = UtilService.getBodyReadTable();
-            sBody.delimitador = "|";
-            sBody.fields = ["CDEQP", "DSEQP", "CDUMD", "DSUMD", "CNEPE"];
-            sBody.option[0].wa = "CDEMB = '" + cdemb + "' AND ERGEQ = 'S'";
-            sBody.tabla = "ZV_FLQE";
+            var uri = UtilService.getHostService() + "/api/General/ConsultaGeneral/";
+            var sBody = UtilService.getConsultaGeneral();
+            sBody.nombreConsulta = "CONSGENLISTEQUIP";
+            sBody.parametro1 = cdemb;
             return this.http(uri).post(null, sBody).then(function(response){
                 return response;
             });
@@ -223,12 +219,10 @@ sap.ui.define([
 
         },
         obtenerListaCoordZonaPesca: function(zonaPesca){
-            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
-            var sBody = UtilService.getBodyReadTable();
-            sBody.delimitador = "|";
-            sBody.fields = ["LTMIN", "LTMAX", "LNMIN", "LNMAX"];
-            sBody.option[0].wa = "CDZPC LIKE '" + zonaPesca + "'";
-            sBody.tabla = "ZFLZPC";
+            var uri = UtilService.getHostService() + "/api/General/ConsultaGeneral/";
+            var sBody = UtilService.getConsultaGeneral();
+            sBody.nombreConsulta = "CONSGENCOOZONPES";
+            sBody.parametro1 = zonaPesca;
             return this.http(uri).post(null, sBody).then(function(response){
                 return response;
             });
@@ -236,12 +230,11 @@ sap.ui.define([
 
         },
         obtenerListaPescaDeclarada: function(nroMarea, nroEvento){
-            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
-            var sBody = UtilService.getBodyReadTable();
-            sBody.delimitador = "|";
-            sBody.fields = ["CDSPC", "DSSPC", "CNPCM", "CDUMD", "DSUMD", "OBSER", "ZMODA", "MANDT"];
-            sBody.option[0].wa = "NRMAR = " + nroMarea + " AND NREVN = " + nroEvento;
-            sBody.tabla = "ZV_FLCD";
+            var uri = UtilService.getHostService() + "/api/General/ConsultaGeneral/";
+            var sBody = UtilService.getConsultaGeneral();
+            sBody.nombreConsulta = "CONSGENPESDECLA";
+            sBody.parametro1 = nroMarea;
+            sBody.parametro2 = nroEvento;
             return this.http(uri).post(null, sBody).then(function(response){
                 return response;
             });
@@ -249,12 +242,10 @@ sap.ui.define([
 
         },
         obtenerListaBodegas: function(cdemb){
-            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
-            var sBody = UtilService.getBodyReadTable();
-            sBody.delimitador = "|";
-            sBody.fields = ["CDBOD", "DSBOD", "CAPES"];
-            sBody.option[0].wa = "CDEMB = '" + cdemb + "' AND ERGBO = 'S'";
-            sBody.tabla = "ZV_FLBE";
+            var uri = UtilService.getHostService() + "/api/General/ConsultaGeneral/";
+            var sBody = UtilService.getConsultaGeneral();
+            sBody.nombreConsulta = "CONSGENLISTBODE";
+            sBody.parametro1 = cdemb;
             return this.http(uri).post(null, sBody).then(function(response){
                 return response;
             });
@@ -262,12 +253,11 @@ sap.ui.define([
 
         },
         obtenerListaPescaBodegas: function(cdmarea, nroEvento){
-            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
-            var sBody = UtilService.getBodyReadTable();
-            sBody.delimitador = "|";
-            sBody.fields = ["CDBOD", "CNPCM"];
-            sBody.option[0].wa = "NRMAR = " + cdmarea + " AND NREVN = " + nroEvento;
-            sBody.tabla = "ZFLPDB";
+            var uri = UtilService.getHostService() + "/api/General/ConsultaGeneral/";
+            var sBody = UtilService.getConsultaGeneral();
+            sBody.nombreConsulta = "CONSGENPESBODE";
+            sBody.parametro1 = cdmarea;
+            sBody.parametro2 = nroEvento;
             return this.http(uri).post(null, sBody).then(function(response){
                 return response;
             });
@@ -275,12 +265,10 @@ sap.ui.define([
 
         },
         obtenerListaPuntosDescarga: function(codPlanta){
-            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
-            var sBody = UtilService.getBodyReadTable();
-            sBody.delimitador = "|";
-            sBody.fields = ["CDPDG", "CDTPD", "DSPDG"];
-            sBody.option[0].wa = "ESREG = 'S' AND CDPTA = '" + codPlanta + "'";
-            sBody.tabla = "ZFLPDG";
+            var uri = UtilService.getHostService() + "/api/General/ConsultaGeneral/";
+            var sBody = UtilService.getConsultaGeneral();
+            sBody.nombreConsulta = "CONSGENPUNTDES";
+            sBody.parametro1 = codPlanta;
             return this.http(uri).post(null, sBody).then(function(response){
                 return response;
             });
@@ -288,13 +276,10 @@ sap.ui.define([
 
         },
         obtenerListaPescaDescargada: function(nroDescarga){
-            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
-            var sBody = UtilService.getBodyReadTable();
-            sBody.delimitador = "|";
-            sBody.fields = ["CDTPC", "CDPTA", "DSPTA", "CDSPC", "DSSPC", "CNPDS", "CDPDG", "CDLDS", "FIDES", "HIDES", "FFDES", "HFDES", 
-            "FECCONMOV", "ESDES", "NROPEDI", "DOC_MB1B", "DOC_MIGO", "DOC_MFBF", "SALDO", "TICKE", "CNPCM", "TPDES", "PESACUMOD", "MANDT"];
-            sBody.option[0].wa = "NRDES = '" + nroDescarga + "'";
-            sBody.tabla = "ZV_FLDS";
+            var uri = UtilService.getHostService() + "/api/General/ConsultaGeneral/";
+            var sBody = UtilService.getConsultaGeneral();
+            sBody.nombreConsulta = "CONSGENPESDESC";
+            sBody.parametro1 = nroDescarga;
             return this.http(uri).post(null, sBody).then(function(response){
                 return response;
             });
@@ -335,15 +320,15 @@ sap.ui.define([
                 return data;
             });
         },
-        obtenerListaDescargaPopUp: function(p_options){
-            var uri = UtilService.getHostService() + "/api/General/Read_Table/";
-            var sBody = UtilService.getBodyReadTable();
-            sBody.delimitador = "|";
-            sBody.fields = ["NRDES", "TICKE", "CDTPC", "CDPTA", "DSPTA", "CDEMB", "NMEMB", "CDLDS", "CDSPC", "DSSPC", "CNPDS", 
-			"FIDES", "HIDES", "FFDES", "HFDES", "PESACUMOD","ESDES", "WEPTA", "MREMB"];
-            sBody.option = [];
-            sBody.options = p_options
-            sBody.tabla = "ZV_FLDS";
+        obtenerListaDescargaPopUp: function(matricula, nom_embarcacion, cod_planta, nom_planta, fecha_inicio){
+            var uri = UtilService.getHostService() + "/api/General/ConsultaGeneral/";
+            var sBody = UtilService.getConsultaGeneral();
+            sBody.nombreConsulta = "CONSGENLISTDESCPP";
+            sBody.parametro1 = matricula;
+            sBody.parametro2 = nom_embarcacion;
+            sBody.parametro3 = cod_planta;
+            sBody.parametro4 = nom_planta;
+            sBody.parametro5 = fecha_inicio;
             return this.http(uri).post(null, sBody).then(function(response){
                 return response;
             });
@@ -467,6 +452,16 @@ sap.ui.define([
             sBody.option[0].wa = "LATGR = '" + latiCalaD +"' AND LATMI >= '" + latiCalaM + "' AND LATMI < '" + (latiCalaM + 1) + "' ";
             sBody.order = "LATMI ASCENDING";
             sBody.tabla = "ZFLLLL";
+            return this.http(uri).post(null, sBody).then(function(response){
+                var data = JSON.parse(response);
+                return data;
+            });
+        },
+        obtenerMareaBiometria: function(embarcacion, p_marea){
+            var uri = UtilService.getHostService() + "/api/embarcacion/consultaMarea2/";
+            var sBody = UtilService.getConsultaMareaBio();
+            sBody.p_embarcacion = embarcacion;
+            sBody.p_marea = p_marea;
             return this.http(uri).post(null, sBody).then(function(response){
                 var data = JSON.parse(response);
                 return data;

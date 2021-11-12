@@ -120,7 +120,9 @@ sap.ui.define([
 
         },
         obtenerTab :function(event){
+            let tab_evento_sel = event.getParameter("selectedItem").getProperty("text");
             console.log(event.getParameter("selectedItem").getProperty("text"));
+            this.Dat_General.onActionSelectTab(tab_evento_sel);
         },
         cargaModelos: function () {
 
@@ -202,9 +204,10 @@ sap.ui.define([
             var s16 = TasaBackendService.obtenerDominio("ZCDMNP");
             var s17 = TasaBackendService.obtenerDominio("ZCDMES");
             var s18 = TasaBackendService.obtenerDominio("ZD_SISFRIO");
-            var s19 = TasaBackendService.obtenerDominio("ZDO_ESPECIES");
+            var s19 = TasaBackendService.obtenerDominio("ESPECIE");
+            var s20 = TasaBackendService.obtenerMareaBiometria(this._embarcacion,this._nroMarea);
 
-            return Promise.all([s1, s2, s3, s4, s5, s6, s7, s8, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19]).then(values => {
+            return Promise.all([s1, s2, s3, s4, s5, s6, s7, s8, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20]).then(values => {
                 self._tipoPreservacion = JSON.parse(values[0]).data[0].CDTPR;
                 self._listasServicioCargaIni = values;
                 console.log(self._listasServicioCargaIni);
@@ -239,7 +242,7 @@ sap.ui.define([
             var o_fragment10 = new Equipamiento(this.getView(), "Equipamiento");
             var o_fragment11 = new Siniestro(this.getView(), "Siniestro",this);
             var o_fragment12 = new Accidente(this.getView(), "Accidente");
-            var o_fragment13 = new Biometria(this.getView(), "Biometria", this._utilNroEventoBio);
+            var o_fragment13 = new Biometria(this.getView(), "Biometria", this._utilNroEventoBio,this);
 
 
             o_tabGeneral.addContent(o_fragment.getcontrol());
@@ -1060,6 +1063,21 @@ sap.ui.define([
         },
         descartarCambios_button(){
             this.Dat_Horometro.onActionDescartarCambios()
+        },
+        onActionCalcCantPescaDecla :function(){
+            var eventoActual = this._listaEventos[this._elementAct]; //modelo del evento actual
+            var cantPescaDec = eventoActual.ListaPescaDeclarada.length;
+            var cantTotal = eventoActual.CantTotalPescDecla;
+            var pescaDecla = eventoActual.ListaPescaDeclarada;
+            for (let index = 0; index < pescaDecla.length; index++) {
+                    const element = pescaDecla[index];
+                    var porcPesca = element.PorcPesca;
+                    element.Editado = true;
+                    element.PorcPesca = porcPesca;
+                    element.CantPesca = cantTotal * (porcPesca * 0.01);
+                }
+            this.getView().getModel("eventos").updateBindings(true);
+            //refrescar modelo
         },
 
         prepararVistaRevision: function () {

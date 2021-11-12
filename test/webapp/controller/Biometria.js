@@ -21,15 +21,16 @@ sap.ui.define([
 
 	return ManagedObject.extend("com.tasa.test.controller.Biometria", {
 
-        constructor: function(oView,sFragName,idBiometria) {
+        constructor: function(oView,sFragName,idBiometria,oThis) {
 
             this._oView = oView;
             this._oControl = sap.ui.xmlfragment(oView.getId(), "com.tasa.test.fragments."+ sFragName,this);
             this._bInit = false;
+            this.ctr = oThis;
             this._navBio = idBiometria;
-            console.log("TextoNav : " + idBiometria)
+            this.cargarDataBiometria();
+            console.log("TextoNav : " + idBiometria);
 
-            this.getTableDefault();
 
 
         },
@@ -165,19 +166,6 @@ sap.ui.define([
                 
                 })
             }
-            // let oSelectedItem = this._oView.byId("myDialog").getSelectedItems(); 
-            // for (var i = 0; i < oSelectedItem.length; i++) {
-            //     var item1 = oSelectedItem[i];
-            //     var cells = item1.getCells();
-            //     console.log(cells[0].getText());
-            //     console.log(cells[1].getText());
-
-            //     lst_Biometria.push({
-            //         CodEspecie: cells[0].getText(),
-            //         Especie: cells[1].getText()
-            //     });
-                    
-            // }
             this._oView.getModel("eventos").setProperty("/ListaBiometria", this.lst_Biometria);
             this._oView.getModel("eventos").updateBindings(true);
         },
@@ -210,6 +198,14 @@ sap.ui.define([
 
 
 
+        },
+        cargarDataBiometria:function(){
+            if (this.ctr._listasServicioCargaIni[18] ? true : false) {
+                let listaDataBio = this.ctr._listasServicioCargaIni[18].str_flbsp_matched;
+
+            }else{
+                this.getTableDefault();
+            }
         }
 
 	});

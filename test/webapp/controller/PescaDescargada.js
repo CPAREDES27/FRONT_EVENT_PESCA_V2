@@ -555,7 +555,7 @@ sap.ui.define([
           
             }
             console.log(this._controler._nroEvento);
-            let s = await  this.cargar_servicios_pescaDesc(options);
+            let s = await  this.cargar_servicios_pescaDescCHD(matricula, nom_embarcacion, cod_planta, nom_planta, fecha_inicio);
             this._oView.getModel("popup_descarga").setProperty("/ListaDescargas", JSON.parse(this._DataPopup[0]).data);
             this._oView.getModel("popup_descarga").updateBindings(true);
 
@@ -631,9 +631,9 @@ sap.ui.define([
 
         },
 
-        cargar_servicios_pescaDesc :function (options){
+        cargar_servicios_pescaDesc :function (matricula, nom_embarcacion, cod_planta, nom_planta, fecha_inicio){
             let self = this;
-            var s1 = TasaBackendService.obtenerListaDescargaPopUp(options);
+            var s1 = TasaBackendService.obtenerListaDescargaPopUp(matricula, nom_embarcacion, cod_planta, nom_planta, fecha_inicio);
             return Promise.all([s1]).then(values => {
                 self._DataPopup = values;
                 console.log(self._DataPopup);
